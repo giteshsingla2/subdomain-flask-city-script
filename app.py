@@ -76,11 +76,15 @@ def load_json_for_request():
 
     for key, path in json_paths.items():
         try:
-            json_data[key] = load_json(path)
-        except Exception as e:
-                print(f"Error loading {key} data from {path}: {e}")
-                json_data[key] = {}  # Set to empty dict on error
+            data = load_json(path)
+        except:
+            data = {}
 
+        # normalize services.json if it’s a list
+        if key == "services" and isinstance(data, list):
+            data = {"Services": data}
+
+        json_data[key] = data
     return json_data
 
 def replace_placeholders(text, service_name, city_name, state_abbreviation, state_full_name, required_data, zip_codes=[], city_zip_code=""):
@@ -255,10 +259,14 @@ def get_other_cities_in_state(state_abbr, current_city_name):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT city_name FROM Cities
-        WHERE state_abbr = ? AND LOWER(city_name) != LOWER(?)
-            ORDER BY city_name ASC
-        """, (state_abbr, current_city_name.lower()))
+        SELECT city_name
+          FROM Cities
+         WHERE LOWER(state_code) = ?
+           AND LOWER(city_name) != ?
+         ORDER BY city_name ASC
+        """,
+        (state_abbr.lower(), current_city_name.lower())
+    )
     cities = [row['city_name'] for row in cursor.fetchall()]
     conn.close()
     return cities

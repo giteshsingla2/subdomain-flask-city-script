@@ -211,8 +211,8 @@
     <!-- Hero Section -->
     <section id="home" class="hero-section bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 px-6">
         <div class="max-w-6xl mx-auto text-center">
-            <h2>{{ main_content.get("Title")|default('Expert Services in ' + city_name) }}</h2>
-            <p>{{ main_content.get("Long Description")|default('Your trusted local experts for all your needs.')|safe }}</p>
+            <h2>{{ main_content.get("Title") }}</h2>
+            <p>{{ main_content.get("Long Description") }}</p>
             
             <div class="flex justify-center flex-wrap gap-4 mb-8">
                 <span class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold"><i class="fas fa-certificate"></i> Licensed & Insured</span>
@@ -504,7 +504,7 @@
             </div>
             
             <div class="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
-                <p>&copy; {% now 'local', '%Y' %} {{ company_name|default("Your Company") }}. All rights reserved. | Fully Insured</p>
+                <p>&copy; {{ year }} {{ company_name|default("Your Company") }}. All rights reserved. | Fully Insured</p>
             </div>
         </div>
     </footer>
