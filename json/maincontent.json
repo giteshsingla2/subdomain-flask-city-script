@@ -1,0 +1,37 @@
+{
+    "Title": "AC Repair in [City], [State]",
+    "Meta Description": "AC Repair in [City], [State]",
+    "Long Description": "AC Repair in [City], [State] Long Description",
+    "Image 1": "https://hostinger.in/logo.png",
+    "Image 1 Alt": "Hostinger Logo",
+    "Image 2": "https://hostinger.in/logo.png",
+    "Image 2 Alt": "Hostinger Logo",
+    "About Content": "<p>We are here in [City], [State] for AC Repair</p>",
+    "Why Choose Us Content": "<p>We are here in [City], [State] for AC Repair</p>",
+    "Blog Content": "<h2> Just Nothing here </h2>",
+    "Our Process": "<h2> Just Our Process here </h2>",
+    "Reviews": [
+      {
+        "name": "Gitesh Singla",
+        "review": "Best AC Repair Service in [City], [State]"
+      },
+      {
+        "name": "Harmna",
+        "review": "Best AC Repair Service in [City], [State]"
+      }
+    ],
+    "FAQ": [
+      {
+        "Question": "What is AC Repair?",
+        "Answer": "AC Repair is the process of repairing an air conditioner to restore its functionality."
+      },
+      {
+        "Question": "2What is AC Repair?",
+        "Answer": "2AC Repair is the process of repairing an air conditioner to restore its functionality."
+      }
+    ],
+    "CTA": {
+      "Title": "Get a quotes",
+      "Description": "Fill out the form below to get a quote for AC Repair in [City], [State]."
+    }
+  }

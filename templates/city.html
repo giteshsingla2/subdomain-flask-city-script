@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ meta_title|default('Welcome') }}</title>
+    <meta name="description" content="{{ meta_description|default('') }}">
+    <link rel="icon" href="{{ url_for('static', filename=favicon) }}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        @media print {
+            body { font-size: 12px; }
+            .no-print { display: none; }
+        }
+        
+        /* Standard HTML element styling for easy AI content generation */
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        h3 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 1.5rem;
+        }
+        
+        h4 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 0.75rem;
+        }
+        
+        h5 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+        }
+        
+        p {
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-section h2 {
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        .hero-section p {
+            color: white;
+            font-size: 1.25rem;
+        }
+        
+        .cta-section h3 {
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-section p {
+            color: white;
+            text-align: center;
+            font-size: 1.25rem;
+        }
+        
+        .footer-section h4,
+        .footer-section h5 {
+            color: white;
+        }
+        
+        .footer-section p,
+        .footer-section li {
+            color: #93c5fd;
+        }
+        
+        .review-slider {
+            animation: slide 20s infinite linear;
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .faq-answer.active {
+            max-height: 200px;
+        }
+        
+        /* Service cards styling */
+        .service-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .service-card h4 {
+            margin-bottom: 0.75rem;
+        }
+        
+        .service-card p {
+            margin-bottom: 1rem;
+        }
+        
+        /* Button styling */
+        .btn-primary {
+            background-color: #dc2626;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #b91c1c;
+        }
+        
+        .btn-secondary {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #1d4ed8;
+        }
+        
+        /* List styling for Why Choose Us */
+        .numbered-list {
+            counter-reset: item;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .numbered-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            counter-increment: item;
+        }
+        
+        .numbered-list li::before {
+            content: counter(item);
+            background-color: #2563eb;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Header -->
+    <header class="bg-blue-900 text-white py-4 px-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div>
+                <img src="{{ url_for('static', filename=required.get('Logo')) }}" alt="{{ company_name|default('Company Logo') }} Logo" class="h-12 mr-3 inline" style="max-height: 50px;">
+                <h1 class="text-3xl font-bold inline">{{ company_name|default('Your Company') }}</h1>
+                <p class="text-sm">{{ required.get("Main Service")|default('Services') }} in {{ city_name|default('Your City') }}, {{ state_name|default('Your State') }}</p>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="/" class="text-white hover:text-yellow-400">Home</a>
+                <a href="/about" class="text-white hover:text-yellow-400">About</a>
+                <a href="/services" class="text-white hover:text-yellow-400">Services</a>
+                <a href="/contact" class="text-white hover:text-yellow-400">Contact</a>
+            </nav>
+            <div class="text-right">
+                <p class="text-xl font-bold text-yellow-400"><i class="fas fa-phone"></i> {{ required.get("Phone")|default('N/A') }}</p>
+                <p class="text-sm">24/7 Emergency Service</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2>{{ main_content.get("Title")|default('Expert Services in ' + city_name) }}</h2>
+            <p>{{ main_content.get("Long Description")|default('Your trusted local experts for all your needs.')|safe }}</p>
+            
+            <div class="flex justify-center flex-wrap gap-4 mb-8">
+                <span class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold"><i class="fas fa-certificate"></i> Licensed & Insured</span>
+                <span class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold"><i class="fas fa-star"></i> 4.9/5 Google Rating</span>
+                <span class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold"><i class="fas fa-clock"></i> 24/7 Emergency</span>
+                <span class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold"><i class="fas fa-shield-alt"></i> 100% Satisfaction</span>
+            </div>
+
+            <div class="bg-white text-blue-900 p-6 rounded-lg max-w-md mx-auto">
+                <h3 class="text-xl font-bold mb-4 text-blue-900">Get Your Free Estimate Today!</h3>
+                <button class="w-full bg-red-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-red-700">
+                    <i class="fas fa-phone"></i> Call {required.phone}
+                </button>
+                <p class="mt-2 text-sm">Or schedule online - we'll call you back!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 px-6 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="bg-gray-200 h-80 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-users text-8xl text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <div>
+                    <h2>{{ main_content.get("About Title")|default('About ' + company_name) }}</h2>
+                    <p>{{ main_content.get("About Content")|default('Learn more about our company and our commitment to quality service.')|safe }}</p>
+                    <a href="{{ main_content.get("CTA", {}).get("Link")|default('/contact') }}" class="btn-primary">
+                        <i class="fas fa-{{ main_content.get("CTA", {}).get("Icon")|default('calendar-alt') }}"></i> {{ main_content.get("CTA", {}).get("Text")|default('Schedule Service Today') }}
+                    </a>
+                </div>
+                <div class="flex justify-center">
+                    {% set about_image = main_content.get("Images", [])[0] if main_content.get("Images") else 'images/placeholder-technician.jpg' %}
+                    <img src="{{ url_for('static', filename=about_image) }}" alt="{{ company_name }} - About Us" class="rounded-lg shadow-xl max-w-sm w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2>Why {{ city_name|default('Our City') }}, {{ state_name|default('Our State') }} Homeowners Choose {{ company_name|default('Us') }}</h2>
+            <div class="prose max-w-none">
+                {{ main_content.get("Why Choose Us Content")|default('<p>Details about why to choose us are coming soon.</p>')|safe }}
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section 1 -->
+    <section class="cta-section bg-red-600 text-white py-12 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2>{{ main_content.get("CTA", {}).get("Title")|default("Ready to Get Started?") }}</h2>
+            <p>{{ main_content.get("CTA", {}).get("Description")|default("Contact us today for a free estimate or to schedule your service. We're here to help!")|safe }}</p>
+            <div class="flex justify-center gap-4">
+                <button class="bg-yellow-400 text-blue-900 py-3 px-6 rounded-lg font-bold hover:bg-yellow-300">
+                    <i class="fas fa-phone"></i> Call {{ required.get("Phone")|default('N/A') }}
+                </button>
+                <a href="{{ main_content.get("CTA", {}).get("Link")|default('/contact') }}" class="btn-secondary">
+                    <i class="fas fa-calendar-alt"></i> {{ main_content.get("CTA", {}).get("Text")|default('Schedule Online Now') }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <section class="py-16 px-6 bg-gray-50">
+        <div class="max-w-4xl mx-auto">
+            {home.Blog Content}                
+                <div class="bg-blue-100 p-6 rounded-lg">
+                    <p class="text-blue-800 font-semibold">Ready to schedule your AC maintenance? Contact Elite AC Repair today for professional service that keeps your home comfortable all summer long. Call (713) 555-COOL or schedule online!</p>
+                </div>
+        </div>
+    </section>
+
+    <!-- Services We Provide -->
+    <section id="services" class="py-16 px-6 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <h2>Our Services in {{ city_name|default('Our City') }}</h2>
+            {% if services_list %}
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for service in services_list %}
+                <div class="service-card flex flex-col justify-between">
+                    <div>
+                        <h4>{{ service.name|default('Service Name') }}</h4>
+                        <p>{{ service.description|default('Learn more about this service.')|safe }}</p>
+                    </div>
+                    <a href="{{ service.url|default('#') }}" class="btn-secondary mt-4 self-start">Learn More</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-center">Our service details are being updated. Please check back soon!</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Zip Codes We Serve -->
+    <section class="py-12 px-6 bg-blue-50">
+        <div class="max-w-6xl mx-auto">
+            <h3 class="text-center">{{ city_name|default('Our City') }} Zip Codes We Serve</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
+                {% for zip_code in zip_codes %}
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <p class="font-bold text-blue-900">{{ zip_code.zip_code }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section 2 -->
+    <section class="cta-section bg-blue-900 text-white py-12 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h3>Ready to Schedule Your AC Service?</h3>
+            <p>Get a free estimate on repairs or new installations. Same-day service available!</p>
+            <div class="flex justify-center gap-4">
+                <button class="bg-yellow-400 text-blue-900 py-3 px-6 rounded-lg font-bold hover:bg-yellow-300">
+                    <i class="fas fa-phone"></i> Call {{ required.get("Phone")|default('N/A') }}
+                </button>
+                <a href="{{ main_content.get("CTA", {}).get("Link")|default('/contact') }}" class="btn-secondary">
+                    <i class="fas fa-calendar-alt"></i> {{ main_content.get("CTA", {}).get("Text")|default('Schedule Online Now') }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="py-16 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2>{{ main_content.get("Our Process Title")|default("Our Simple Process") }}</h2>
+            <div class="prose max-w-none">
+                 {{ main_content.get("Our Process")|default('<p>Our process details are coming soon.</p>')|safe }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="py-16 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2>Serving {{ city_name|default('Our City') }} and Surrounding Areas</h2>
+            <div class="grid lg:grid-cols-2 gap-8 items-start">
+                <div>
+                    <iframe 
+                        src="https://www.google.com/maps?q={{ city_name|default('Our City') }}, {{ state_name|default('Our State') }}&output=embed" 
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="rounded-lg shadow-lg">
+                    </iframe>
+                </div>
+                <div>
+                    <h4>Our Service Area</h4>
+                    <p>{{ company_name|default('Our Company') }} proudly serves {{ city_name|default('Our City') }} and the greater metropolitan area. Our technicians are strategically located to provide fast response times throughout the region.</p>
+                    
+                    <h5>Cities We Serve:</h5>
+                    <div class="grid grid-cols-2 gap-2 text-gray-700">
+                        {% for city in other_city_links %}
+                        <div><i class="fas fa-map-marker-alt text-blue-600"></i> {{ city.name|title }}</div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-blue-100 rounded-lg">
+                        <h5 class="font-bold text-blue-900">Emergency Service Area</h5>
+                        <p class="text-blue-800">24/7 emergency AC repair available within 30 miles of {{ city_name|default('Our City') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="py-16 px-6 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <h2>What Our {{ city_name|default('Our City') }} Customers Say</h2>
+            <div class="overflow-hidden bg-white rounded-lg shadow-sm p-4">
+                <div class="review-slider flex space-x-8 whitespace-nowrap">
+                    {% for review in reviews %}
+                    <div class="flex-shrink-0 bg-blue-50 p-6 rounded-lg w-80">
+                        <div class="flex mb-2">
+                            {% set rating = review.get("Rating")|int %}
+                            {% for i in range(1, 6) %}
+                                <i class="fas fa-star {% if i <= rating %}text-yellow-400{% else %}text-gray-300{% endif %}"></i>
+                            {% endfor %}
+                        </div>
+                        <p class="text-gray-700 mb-3 whitespace-normal">{{ review.get("Review Text")|default('A great experience!')|safe }}</p>
+                        <p class="font-semibold">- {{ review.get("Reviewer Name")|default('Valued Customer') }}</p>
+                    </div>
+                    {% endfor %}                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2>{{ main_content.get("FAQ Title")|default("Frequently Asked Questions") }}</h2>
+            <div class="space-y-4">
+                {% for faq in faqs %}
+                <div class="border border-gray-200 rounded-lg">
+                    <button class="faq-toggle w-full p-4 text-left font-bold text-blue-900 hover:bg-gray-50 flex justify-between items-center">
+                        <span>{{ faq.get("Question")|default('Question') }}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="p-4 text-gray-700 border-t border-gray-200">{{ faq.get("Answer")|default('Answer coming soon.')|safe }}</p>
+                    </div>
+                </div>
+                {% endfor %}                
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section id="contact" class="cta-section bg-gradient-to-r from-red-600 to-red-800 text-white py-16 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h3 class="text-4xl font-bold mb-4">{{ main_content.get("CTA", {}).get("Title")|default("Don't Wait, Contact Us Now!") }}</h3>
+            <p class="text-xl mb-8">{{ main_content.get("CTA", {}).get("Description")|default("Our team is ready to assist you. Call us or schedule your service online today.")|safe }}</p>
+            
+            <div class="bg-white text-red-600 p-8 rounded-lg max-w-2xl mx-auto">
+                <h4 class="text-2xl font-bold mb-4 text-red-600">{{ main_content.get("CTA", {}).get("Sub Title")|default("Call Now for Same-Day Service!") }}</h4>
+                <div class="text-4xl font-bold mb-4">
+                    <i class="fas fa-phone"></i> {{ required.get("Phone")|default('N/A') }}
+                </div>
+                <p class="text-lg mb-4 text-red-600">{{ main_content.get("CTA", {}).get("Secondary Text")|default("Or schedule your service online - we'll call you back within 30 minutes!") }}</p>
+                <div class="flex justify-center gap-4">
+                    <a href="tel:{{ required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','') }}" class="btn-primary">
+                        <i class="fas fa-phone"></i> Call {{ required.get("Phone")|default('Now') }}
+                    </a>
+                    <a href="{{ main_content.get("CTA", {}).get("Link")|default('/contact') }}" class="btn-secondary">
+                        <i class="fas fa-{{ main_content.get("CTA", {}).get("Icon")|default('calendar-alt') }}"></i> {{ main_content.get("CTA", {}).get("Text")|default('Schedule Online') }}
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-8 grid md:grid-cols-3 gap-6 text-center">
+                {% for feature in main_content.get("Key Features", []) %}
+                <div>
+                    <i class="fas {{ feature.get("Icon")|default('fa-check-circle') }} text-3xl mb-2"></i>
+                    <p class="font-semibold">{{ feature.get("Title")|default('Key Feature') }}</p>
+                    {% if feature.get("Description") %}
+                    <p class="text-sm text-gray-200">{{ feature.get("Description") }}</p>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div>
+                    <i class="fas fa-clock text-3xl mb-2"></i>
+                    <p class="font-semibold">24/7 Emergency Service</p>
+                </div>
+                <div>
+                    <i class="fas fa-dollar-sign text-3xl mb-2"></i>
+                    <p class="font-semibold">Upfront Pricing</p>
+                </div>
+                <div>
+                    <i class="fas fa-shield-alt text-3xl mb-2"></i>
+                    <p class="font-semibold">100% Satisfaction Guaranteed</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-section bg-blue-900 text-white py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h4>{{ company_name|default("Your Company") }} {{ city_name|default("Local Experts") }}</h4>
+                    <p>Your trusted local experts. Licensed, insured, and committed to your comfort and satisfaction.</p>
+                </div>
+                
+                <div>
+                    <h5>Contact Info</h5>
+                    <div class="space-y-2 text-blue-200">
+                        <p><i class="fas fa-phone"></i> {{ required.get("Phone")|default('N/A') }}</p>
+                        <p><i class="fas fa-envelope"></i> {{ required.get("Email")|default('N/A') }}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ required.get("Address")|default('N/A') }}</p>
+                        <p><i class="fas fa-clock"></i> 24/7 Emergency Service</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-blue-800 mt-8 pt-8 text-center text-blue-200">
+                <p>&copy; {% now 'local', '%Y' %} {{ company_name|default("Your Company") }}. All rights reserved. | Fully Insured</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqToggles = document.querySelectorAll('.faq-toggle');
+            
+            faqToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    // Close all other answers
+                    faqToggles.forEach(otherToggle => {
+                        if (otherToggle !== this) {
+                            otherToggle.nextElementSibling.classList.remove('active');
+                            otherToggle.querySelector('i').classList.remove('fa-chevron-up');
+                            otherToggle.querySelector('i').classList.add('fa-chevron-down');
+                        }
+                    });
+                    
+                    // Toggle current answer
+                    answer.classList.toggle('active');
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                });
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

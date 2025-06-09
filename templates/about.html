@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Elite AC Repair - Your Trusted HVAC Experts</title>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            color: white;
+            padding: 1rem 0;
+            position: relative;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            animation: slideInRight 1s ease-out;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .header-contact {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .header-phone {
+            background: #f97316;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .header-phone:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #3b82f6 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="60" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .about-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 4rem;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .about-content h2 {
+            color: #1e40af;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            animation: slideInLeft 1s ease-out 0.5s both;
+        }
+
+        .about-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: #f97316;
+            border-radius: 2px;
+            animation: expandWidth 1s ease-out 1s both;
+        }
+
+        .about-content p {
+            color: #555;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            animation: slideInLeft 1s ease-out 0.7s both;
+        }
+
+        .about-image {
+            position: relative;
+            animation: slideInRight 1s ease-out 0.5s both;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: 20px;
+            bottom: 20px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 15px;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        /* Values Section */
+        .values-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin: 4rem 0;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .values-section h2 {
+            color: #1e40af;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .value-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: slideInUp 1s ease-out calc(0.5s + var(--delay)) both;
+        }
+
+        .value-card:nth-child(1) { --delay: 0s; }
+        .value-card:nth-child(2) { --delay: 0.2s; }
+        .value-card:nth-child(3) { --delay: 0.4s; }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .value-card i {
+            font-size: 3rem;
+            color: #f97316;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .value-card h3 {
+            color: #1e40af;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .value-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 20px;
+            margin: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.05) 2px,
+                rgba(255,255,255,0.05) 4px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: slideInUp 1s ease-out 0.5s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #f97316;
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.3);
+            animation: slideInUp 1s ease-out 0.7s both;
+        }
+
+        .cta-button:hover {
+            background: #ea580c;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(249, 115, 22, 0.5);
+        }
+
+        .cta-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #1f2937;
+            color: white;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            color: #f97316;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p, .footer-section li {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #f97316;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #374151;
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+            to {
+                width: 60px;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(-50px);
+            }
+            100% {
+                transform: translateX(50px);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            main {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="/" class="logo">
+                <i class="fas fa-snowflake"></i> Elite AC Repair
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/services">Services</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-contact">
+                <a href="tel:+17135550199" class="header-phone">
+                    <i class="fas fa-phone"></i> (713) 555-0199
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>About Elite AC Repair</h1>
+            <p>Your trusted partner for reliable air conditioning solutions since 2008. We're committed to keeping Houston comfortable, one home at a time.</p>
+        </div>
+    </section>
+
+    <main>
+        <section class="about-section">
+            <div class="about-content">
+                <h2>Our Story</h2>
+                <p>Founded in 2008 by Mike Rodriguez, Elite AC Repair began as a small family business with a simple mission: to provide honest, reliable air conditioning services to the Houston community. What started as a one-man operation has grown into a trusted team of certified technicians serving the greater Houston area.</p>
+                <p>With over 15 years of experience in the HVAC industry, we've built our reputation on quality workmanship, transparent pricing, and exceptional customer service. We understand that when your AC breaks down in the Houston heat, you need fast, reliable service you can trust.</p>
+                <p>Today, we're proud to be Houston's go-to AC repair specialists, serving thousands of satisfied customers across the metropolitan area. Our commitment to excellence and community involvement has made us a cornerstone of reliable home comfort solutions.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Elite AC Repair Team">
+            </div>
+        </section>
+
+        <section class="values-section">
+            <h2>Our Core Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <i class="fas fa-heart"></i>
+                    <h3>Customer First</h3>
+                    <p>Every decision we make is centered around providing the best possible experience for our customers. Your comfort and satisfaction drive everything we do.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Integrity & Trust</h3>
+                    <p>We believe in honest pricing, transparent communication, and standing behind our work. No surprises, no hidden fees, just reliable service you can count on.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-award"></i>
+                    <h3>Excellence</h3>
+                    <p>Our certified technicians undergo continuous training to stay current with the latest HVAC technologies and best practices, ensuring top-quality service every time.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Experience the Elite Difference?</h2>
+                <p>Join thousands of satisfied Houston homeowners who trust Elite AC Repair for all their air conditioning needs.</p>
+                <a href="tel:+17135550199" class="cta-button">
+                    <i class="fas fa-phone"></i> Call Now: (713) 555-0199
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Information</h3>
+                <p><i class="fas fa-phone"></i> Phone: (713) 555-0199</p>
+                <p><i class="fas fa-envelope"></i> Email: info@eliteacrepairhouston.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Address: 1234 Main Street, Houston, TX 77001</p>
+                <p><i class="fas fa-clock"></i> Hours: 24/7 Emergency Service Available</p>
+            </div>
+            <div class="footer-section">
+                <h3>Our Services</h3>
+                <ul>
+                    <li><a href="/services/ac-repair">AC Repair</a></li>
+                    <li><a href="/services/ac-installation">AC Installation</a></li>
+                    <li><a href="/services/maintenance">Maintenance</a></li>
+                    <li><a href="/services/emergency">Emergency Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Service Areas</h3>
+                <p>Houston Metropolitan Area</p>
+                <p>Licensed & Insured in Texas</p>
+                <p>NATE Certified Technicians</p>
+                <p>BBB Accredited Business</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Elite AC Repair Houston. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
