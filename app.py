@@ -17,6 +17,9 @@ cache = Cache(app, config={
         'CACHE_DEFAULT_TIMEOUT': 0  # Never expire cache
     })
 
+app.config['SERVER_NAME'] = 'demo.local:8000'
+
+
 # Database cache initialization
 class DatabaseCache:
     def __init__(self):
@@ -28,38 +31,26 @@ class DatabaseCache:
         with sqlite3.connect('newcities.db') as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            
-            # Initialize database structure
-            cursor.execute("DROP TABLE IF EXISTS Cities")
-            
-            cursor.execute("""
-                CREATE TABLE Cities (
-                  id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  city_name TEXT NOT NULL,
-                  state_code TEXT NOT NULL,
-                  state_name TEXT NOT NULL,
-                  main_zip_code TEXT NOT NULL,
-                  zip_codes TEXT NOT NULL
-                )
-            """)
-            # Prepare statement for inserting cities
-            insert_stmt = "INSERT INTO Cities (city_name, state_code, state_name, main_zip_code, zip_codes) VALUES (?, ?, ?, ?, ?)"
 
-            # Load cities with their states
-            cursor.execute("SELECT city_name, state_code, state_name, main_zip_code, zip_codes FROM Cities")
-            for row in cursor.fetchall():
-                if row['state_code'] not in self.cities:
-                    self.cities[row['state_code']] = []
-                self.cities[row['state_code']].append(row['city_name'])
-                # Load zip codes
-                city_name = row['city_name'].lower()
-                if city_name not in self.zip_codes:
-                    self.zip_codes[city_name] = []
-                zip_codes_list = row['zip_codes'].split(',')
-                for zip_code in zip_codes_list:
-                    self.zip_codes[city_name].append(zip_code.strip())
+            # 1) load every distinct state
+            cursor.execute("SELECT DISTINCT state_code, state_name FROM Cities")
+            for row in cursor:
+                abbr = row['state_code'].lower()
+                self.states[abbr] = row['state_name']
 
-    # Initialize database cache at startup
+            # 2) load cities grouped by state
+            cursor.execute("SELECT city_name, state_code, main_zip_code, zip_codes FROM Cities")
+            for row in cursor:
+                abbr = row['state_code'].lower()
+                city = row['city_name']
+                # add city→state index
+                self.cities.setdefault(abbr, []).append(city)
+                # add zip index
+                key = city.lower()
+                zips = [z.strip() for z in row['zip_codes'].split(',') if z.strip()]
+                self.zip_codes.setdefault(key, []).extend(zips)
+                
+# Initialize database cache at startup
 db_cache = DatabaseCache()
 
 @cache.memoize(timeout=300)
@@ -139,19 +130,26 @@ def get_cities_in_state(state_abbr):
     return db_cache.cities.get(state_abbr, [])
 
 def get_city_info(city_subdomain, state_abbr):
+    city_norm = city_subdomain.replace('-', ' ').lower()
+    abbr = state_abbr.lower()
     conn = get_db_connection()
     cursor = conn.cursor()
-    city_subdomain_normalized = city_subdomain.replace('-', ' ').lower()
     cursor.execute(
-        "SELECT * FROM Cities WHERE city_name = ? AND state_code = ?",
-        (state_abbr, city_subdomain_normalized)
+        """SELECT city_name, main_zip_code
+           FROM Cities
+           WHERE LOWER(city_name)=?
+             AND LOWER(state_code)=?""",
+        (city_norm, abbr)
     )
-    city_row = cursor.fetchone()
+    row = cursor.fetchone()
     conn.close()
-    if city_row:
-        return {'city_name': city_row['city_name'], 'zip_code': city_row['zip_code']}
-    else:
+    if not row:
         return None
+    return {
+        'city_name': row['city_name'],
+        'zip_code': row['main_zip_code']
+    }
+
 
 def get_states():
     return list(db_cache.states.keys())
