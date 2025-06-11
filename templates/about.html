@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Elite AC Repair - Your Trusted HVAC Experts</title>
+    <title>About {{required.get("Company Name")}} - Your Trusted {{required.get("Main Service")}} Experts</title>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -494,7 +494,7 @@
     <header>
         <div class="header-container">
             <a href="/" class="logo">
-                <i class="fas fa-snowflake"></i> Elite AC Repair
+                <i class="fas fa-snowflake"></i> {{required.get("Company Name")}}
             </a>
             <nav>
                 <ul class="nav-links">
@@ -505,8 +505,8 @@
                 </ul>
             </nav>
             <div class="header-contact">
-                <a href="tel:+17135550199" class="header-phone">
-                    <i class="fas fa-phone"></i> (713) 555-0199
+                <a href="tel:+1{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}" class="header-phone">
+                    <i class="fas fa-phone"></i> {{required.get("Phone")}}
                 </a>
             </div>
         </div>
@@ -514,21 +514,18 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1>About Elite AC Repair</h1>
-            <p>Your trusted partner for reliable air conditioning solutions since 2008. We're committed to keeping Houston comfortable, one home at a time.</p>
+            <h1>About {{required.get("Company Name")}}</h1>
+            <p>Your trusted partner for reliable {{required.get("Main Service")}} solutions since {{required.get("Year")}}. We're committed to keeping {{city_name}} comfortable, one home at a time.</p>
         </div>
     </section>
 
     <main>
         <section class="about-section">
             <div class="about-content">
-                <h2>Our Story</h2>
-                <p>Founded in 2008 by Mike Rodriguez, Elite AC Repair began as a small family business with a simple mission: to provide honest, reliable air conditioning services to the Houston community. What started as a one-man operation has grown into a trusted team of certified technicians serving the greater Houston area.</p>
-                <p>With over 15 years of experience in the HVAC industry, we've built our reputation on quality workmanship, transparent pricing, and exceptional customer service. We understand that when your AC breaks down in the Houston heat, you need fast, reliable service you can trust.</p>
-                <p>Today, we're proud to be Houston's go-to AC repair specialists, serving thousands of satisfied customers across the metropolitan area. Our commitment to excellence and community involvement has made us a cornerstone of reliable home comfort solutions.</p>
+            {{main_content.get("About Content")}}
             </div>
             <div class="about-image">
-                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Elite AC Repair Team">
+                <img src="{{main_content.get("Image 1")}}" alt="{{required.get("Company Name")}} Team">
             </div>
         </section>
 
@@ -548,17 +545,17 @@
                 <div class="value-card">
                     <i class="fas fa-award"></i>
                     <h3>Excellence</h3>
-                    <p>Our certified technicians undergo continuous training to stay current with the latest HVAC technologies and best practices, ensuring top-quality service every time.</p>
+                    <p>Our certified technicians undergo continuous training to stay current with the latest technologies and best practices, ensuring top-quality service every time.</p>
                 </div>
             </div>
         </section>
 
         <section class="cta-section">
             <div class="cta-content">
-                <h2>Ready to Experience the Elite Difference?</h2>
-                <p>Join thousands of satisfied Houston homeowners who trust Elite AC Repair for all their air conditioning needs.</p>
-                <a href="tel:+17135550199" class="cta-button">
-                    <i class="fas fa-phone"></i> Call Now: (713) 555-0199
+                <h2>{{main_content.get("CTA", {}).get("Title")}}</h2>
+                <p>{{main_content.get("CTA", {}).get("Description")}}</p>
+                <a href="tel:+1{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}" class="cta-button">
+                    <i class="fas fa-phone"></i> Call Now: {{required.get("Phone")}}
                 </a>
             </div>
         </section>
@@ -568,30 +565,14 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Contact Information</h3>
-                <p><i class="fas fa-phone"></i> Phone: (713) 555-0199</p>
-                <p><i class="fas fa-envelope"></i> Email: info@eliteacrepairhouston.com</p>
-                <p><i class="fas fa-map-marker-alt"></i> Address: 1234 Main Street, Houston, TX 77001</p>
+                <p><i class="fas fa-phone"></i> Phone: {{required.get("Phone")}}</p>
+                <p><i class="fas fa-envelope"></i> Email: {{required.get("Business Email")}}</p>
+                <p><i class="fas fa-map-marker-alt"></i> Address: {{required.get("Business Address")}}</p>
                 <p><i class="fas fa-clock"></i> Hours: 24/7 Emergency Service Available</p>
-            </div>
-            <div class="footer-section">
-                <h3>Our Services</h3>
-                <ul>
-                    <li><a href="/services/ac-repair">AC Repair</a></li>
-                    <li><a href="/services/ac-installation">AC Installation</a></li>
-                    <li><a href="/services/maintenance">Maintenance</a></li>
-                    <li><a href="/services/emergency">Emergency Service</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Service Areas</h3>
-                <p>Houston Metropolitan Area</p>
-                <p>Licensed & Insured in Texas</p>
-                <p>NATE Certified Technicians</p>
-                <p>BBB Accredited Business</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Elite AC Repair Houston. All rights reserved.</p>
+            <p>&copy; 2025 {{required.get("Company Name")}} {{city_name}}. All rights reserved.</p>
         </div>
     </footer>
 </body>

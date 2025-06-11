@@ -617,7 +617,14 @@ def services_page():
         json_data = request.json_data
         required_data = json_data.get("required", {})
         main_content_data = json_data.get("maincontent", {})
-        services_data = json_data.get("services", []) # services.json is a list of services
+        raw = json_data.get("services", {})
+        # if you normalized it at load time it’ll be a dict {"Services": [...]} 
+        if isinstance(raw, dict):
+            services_list_src = raw.get("Services", [])
+        else:
+            # in case someone left it as a flat list
+            services_list_src = raw
+
         subdomains = host.split('.')[0].split('-')
 
         if len(subdomains) >= 2: # City-State specific page
@@ -633,7 +640,7 @@ def services_page():
                 zip_codes = get_zip_codes_from_db(city_name)
 
                 services_list = []
-                for service_item in services_data:
+                for service_item in services_list_src:
                     service_name = service_item.get("Service Name")
                     service_slug = service_item.get("slug")
                     if service_name and service_slug:

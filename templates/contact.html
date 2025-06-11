@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Elite AC Repair - Get In Touch Today</title>
+    <title>Contact {{required.get("Company Name")}} - Get In Touch Today</title>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -451,7 +451,7 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <a href="#" class="logo">Elite AC Repair</a>
+            <a href="#" class="logo">{{required.get("Company Name")}}</a>
             <nav>
                 <ul class="nav-links">
                     <li><a href="/">Home</a></li>
@@ -461,7 +461,7 @@
                 </ul>
             </nav>
             <a href="tel:713-555-0199" class="header-phone">
-                <i class="fas fa-phone"></i> (713) 555-0199
+                <i class="fas fa-phone"></i> {{required.get("Phone")}}
             </a>
         </div>
     </header>
@@ -470,7 +470,7 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Contact Us</h1>
-            <p>Ready to fix your AC? Get in touch with Houston's most trusted air conditioning experts. We're here to help 24/7!</p>
+            <p>Still having some questions? Get in touch with {{city_name}}'s most trusted {{required.get("Main Service")}} experts. We're here to help 24/7!</p>
         </div>
     </section>
 
@@ -479,7 +479,6 @@
         <div class="contact-container">
             <div class="contact-info animate-on-scroll">
                 <h2>Get In Touch Today</h2>
-                <p>Don't let AC problems disrupt your comfort. Our experienced technicians are ready to provide fast, reliable service throughout Houston and surrounding areas. Whether it's an emergency repair or routine maintenance, we're just a phone call away.</p>
                 
                 <div class="contact-details">
                     <div class="contact-item">
@@ -488,7 +487,7 @@
                         </div>
                         <div class="contact-text">
                             <h3>Call Us Now</h3>
-                            <p><a href="tel:713-555-0199">(713) 555-0199</a></p>
+                            <p><a href="tel:{{required.get("Phone")}}">{{required.get("Phone")}}</a></p>
                             <p>Available 24/7 for emergencies</p>
                         </div>
                     </div>
@@ -499,7 +498,7 @@
                         </div>
                         <div class="contact-text">
                             <h3>Visit Our Office</h3>
-                            <p>4520 Main Street<br>Houston, TX 77002</p>
+                            <p>{{required.get("Business Address")}}</p>
                             <p>Monday - Friday: 8:00 AM - 6:00 PM</p>
                         </div>
                     </div>
@@ -510,7 +509,7 @@
                         </div>
                         <div class="contact-text">
                             <h3>Email Us</h3>
-                            <p><a href="mailto:service@eliteacrepair.com">service@eliteacrepair.com</a></p>
+                            <p><a href="mailto:{{required.get("Business Email")}}">{{required.get("Business Email")}}</a></p>
                             <p>We respond within 2 hours</p>
                         </div>
                     </div>
@@ -532,7 +531,7 @@
             <div class="contact-map animate-on-scroll">
                 <div class="map-container">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3464.0397!2d-95.3698!3d29.7604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8640bf48d4b0e70b%3A0x2f983b8d4f4f4f4f!2sDowntown%20Houston%2C%20TX!5e0!3m2!1sen!2sus!4v1635959765765!5m2!1sen!2sus"
+                        src="https://www.google.com/maps?q={{ city_name}}, {{ state_name}}&output=embed"
                         allowfullscreen="" 
                         loading="lazy" 
                         referrerpolicy="no-referrer-when-downgrade">
@@ -545,10 +544,10 @@
     <!-- Emergency Section -->
     <section class="emergency-section">
         <div class="emergency-content">
-            <h2>AC Emergency? We're Here 24/7!</h2>
-            <p>Don't suffer in the Houston heat. Our emergency AC repair team is standing by to restore your comfort quickly and efficiently.</p>
-            <a href="tel:713-555-0199" class="emergency-phone">
-                <i class="fas fa-phone-alt"></i> (713) 555-0199
+            <h2>{{ main_content.get("CTA", {}).get("Title") }}</h2>
+            <p>{{ main_content.get("CTA", {}).get("Description") }}</p>
+            <a href="tel:{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}" class="emergency-phone">
+                <i class="fas fa-phone-alt"></i> {{required.get("Phone")}}
             </a>
         </div>
     </section>
@@ -558,22 +557,17 @@
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Elite AC Repair Houston</h3>
-                    <p>Your trusted partner for all air conditioning needs in Houston and surrounding areas. Licensed, insured, and committed to excellence.</p>
+                    <h3>{{required.get("Company Name")}}</h3>
                 </div>
                 <div class="footer-section">
                     <h3>Contact Information</h3>
-                    <p>Phone: (713) 555-0199<br>
-                       Email: service@eliteacrepair.com<br>
-                       Address: 4520 Main Street, Houston, TX 77002</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Service Areas</h3>
-                    <p>Houston, Katy, Sugar Land, The Woodlands, Cypress, Spring, Tomball, Humble, and surrounding communities.</p>
+                    <p>Phone: {{required.get("Phone")}}<br>
+                       Email: {{required.get("Business Email")}}<br>
+                       Address: {{required.get("Business Address")}}</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Elite AC Repair Houston. All rights reserved. Licensed & Insured HVAC Contractor.</p>
+                <p>&copy; 2025 {{required.get("Company Name")}} {{city_name}}. All rights reserved. Licensed & Insured.</p>
             </div>
         </div>
     </footer>

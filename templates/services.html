@@ -163,6 +163,7 @@
     </section>
 
     <!-- Services Section -->
+    {% block content %}
     <section class="py-20 bg-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
@@ -172,125 +173,30 @@
                     to keep your system running efficiently and your home comfortable.
                 </p>
             </div>
-            
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Service 1 -->
+                {% for svc in services_list %}
                 <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in">
                     <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
                         <i class="fas fa-tools text-white text-2xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">AC Repair</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">{{ svc.name }}</h3>
                     <p class="text-gray-600 mb-6 leading-relaxed">
-                        Fast, reliable repairs for all AC issues. Our certified technicians diagnose and fix problems quickly to restore your comfort.
+                        {{ svc.description }}
                     </p>
                     <div class="space-y-3">
-                        <a href="#" class="block w-full text-center py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300">
+                        <a href="{{ svc.url }}" class="block w-full text-center py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300">
                             Learn More
                         </a>
-                        <a href="tel:(713) 555-0199" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
+                        <a href="tel:{{ required.get('Phone') }}" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
                             <i class="fas fa-phone mr-2"></i>Call Now
                         </a>
                     </div>
                 </div>
-
-                <!-- Service 2 -->
-                <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in fade-in-delay-1">
-                    <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mb-6">
-                        <i class="fas fa-plus-circle text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">AC Installation</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Professional installation of new air conditioning systems. We help you choose the perfect unit for your home and budget.
-                    </p>
-                    <div class="space-y-3">
-                        <a href="#" class="block w-full text-center py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300">
-                            Learn More
-                        </a>
-                        <a href="tel:(713) 555-0199" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
-                            <i class="fas fa-phone mr-2"></i>Call Now
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Service 3 -->
-                <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in fade-in-delay-2">
-                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-6">
-                        <i class="fas fa-cog text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">AC Maintenance</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Regular maintenance to keep your AC running efficiently. Prevent costly breakdowns with our comprehensive tune-up services.
-                    </p>
-                    <div class="space-y-3">
-                        <a href="#" class="block w-full text-center py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300">
-                            Learn More
-                        </a>
-                        <a href="tel:(713) 555-0199" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
-                            <i class="fas fa-phone mr-2"></i>Call Now
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Service 4 -->
-                <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in">
-                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-6">
-                        <i class="fas fa-thermometer-half text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Heating Services</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Complete heating solutions including furnace repair, installation, and maintenance to keep you warm during cold months.
-                    </p>
-                    <div class="space-y-3">
-                        <a href="#" class="block w-full text-center py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300">
-                            Learn More
-                        </a>
-                        <a href="tel:(713) 555-0199" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
-                            <i class="fas fa-phone mr-2"></i>Call Now
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Service 5 -->
-                <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in fade-in-delay-1">
-                    <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mb-6">
-                        <i class="fas fa-exclamation-triangle text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Emergency Service</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        24/7 emergency AC repair service. When your system breaks down, we're here to restore your comfort quickly and efficiently.
-                    </p>
-                    <div class="space-y-3">
-                        <a href="#" class="block w-full text-center py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300">
-                            Learn More
-                        </a>
-                        <a href="tel:(713) 555-0199" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
-                            <i class="fas fa-phone mr-2"></i>Call Now
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Service 6 -->
-                <div class="service-card bg-white rounded-2xl p-8 shadow-lg border border-gray-100 fade-in fade-in-delay-2">
-                    <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center mb-6">
-                        <i class="fas fa-search text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">AC Inspection</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Comprehensive system inspections to identify potential issues before they become costly problems. Ensure optimal performance.
-                    </p>
-                    <div class="space-y-3">
-                        <a href="#" class="block w-full text-center py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300">
-                            Learn More
-                        </a>
-                        <a href="tel:(713) 555-0199" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
-                            <i class="fas fa-phone mr-2"></i>Call Now
-                        </a>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
-
+    {% endblock %}
     <!-- Call to Action -->
     <section class="py-20 gradient-bg text-white">
         <div class="container mx-auto px-6 text-center">

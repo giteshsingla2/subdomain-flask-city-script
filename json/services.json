@@ -1,68 +1,66 @@
-[
-  {
-    "Services": [
-      {
-        "Title": "Expert Water Damage Restoration",
-        "Service Name": "Water Damage Restoration",
-        "slug": "water-damage-restoration",
-        "Meta Description": "Professional water damage restoration service to restore your home fast. 24/7 emergency response and expert technicians.",
-        "Blog Content": "When water damage strikes, quick action is critical. Our certified team uses advanced drying and restoration techniques to bring your property back to pre-loss condition. From burst pipes to flooding, we handle it all with care and efficiency.",
-        "Reviews": [
-          {
-            "name": "John D.",
-            "review": "They arrived within the hour and saved my basement from further damage. Absolutely top-notch service!"
-          },
-          {
-            "name": "Lisa M.",
-            "review": "Professional, courteous, and effective. They explained every step of the process clearly."
-          }
-        ],
-        "FAQ": [
-          {
-            "Question": "How quickly can you respond to a water damage emergency?",
-            "Answer": "We offer 24/7 emergency service and can usually be onsite within 60 minutes."
-          },
-          {
-            "Question": "Do you work with insurance companies?",
-            "Answer": "Yes, we work directly with all major insurance providers to simplify your claims process."
-          }
-        ],
-        "CTA": {
-          "Title": "Need Water Damage Help Now?",
-          "Description": "Call us anytime, day or night, for fast, reliable water damage restoration services."
+{
+  "Services": [
+    {
+      "Title": "Expert Water Damage Restoration",
+      "Service Name": "Water Damage Restoration",
+      "slug": "water-damage-restoration",
+      "Meta Description": "Professional water damage restoration service to restore your home fast. 24/7 emergency response and expert technicians.",
+      "blog_content": "When water damage strikes, quick action is critical. Our certified team uses advanced drying and restoration techniques to bring your property back to pre-loss condition. From burst pipes to flooding, we handle it all with care and efficiency.",
+      "Reviews": [
+        {
+          "name": "John D.",
+          "review": "They arrived within the hour and saved my basement from further damage. Absolutely top-notch service!"
+        },
+        {
+          "name": "Lisa M.",
+          "review": "Professional, courteous, and effective. They explained every step of the process clearly."
         }
-      },
-      {
-        "Title": "Mold Remediation & Removal",
-        "Service Name": "Mold Removal",
-        "slug": "mold-removal",
-        "Meta Description": "Certified mold removal and remediation to keep your home safe and healthy. Free inspections available.",
-        "Blog Content": "Mold growth can cause serious health risks and property damage if left untreated. Our certified mold specialists inspect, remove, and prevent mold with advanced, eco-friendly treatments. Breathe easy again with our trusted services.",
-        "Reviews": [
-          {
-            "name": "Carlos R.",
-            "review": "The team did a thorough job and helped us understand how to prevent future mold issues."
-          },
-          {
-            "name": "Emily T.",
-            "review": "Quick, clean, and professional. You can't even tell there was ever a mold problem!"
-          }
-        ],
-        "FAQ": [
-          {
-            "Question": "How do I know if I have a mold problem?",
-            "Answer": "Signs include musty smells, visible growth, and allergy symptoms. We offer free inspections to confirm."
-          },
-          {
-            "Question": "Is your mold removal process safe?",
-            "Answer": "Yes, we use non-toxic, eco-friendly methods that are safe for children and pets."
-          }
-        ],
-        "CTA": {
-          "Title": "Worried About Mold?",
-          "Description": "Schedule your free mold inspection today and let our experts handle the rest."
+      ],
+      "FAQ": [
+        {
+          "Question": "How quickly can you respond to a water damage emergency?",
+          "Answer": "We offer 24/7 emergency service and can usually be onsite within 60 minutes."
+        },
+        {
+          "Question": "Do you work with insurance companies?",
+          "Answer": "Yes, we work directly with all major insurance providers to simplify your claims process."
         }
+      ],
+      "CTA": {
+        "Title": "Need Water Damage Help Now?",
+        "Description": "Call us anytime, day or night, for fast, reliable water damage restoration services."
       }
-    ]
-  }
-]
+    },
+    {
+      "Title": "Mold Remediation & Removal",
+      "Service Name": "Mold Removal",
+      "slug": "mold-removal",
+      "Meta Description": "Certified mold removal and remediation to keep your home safe and healthy. Free inspections available.",
+      "Blog Content": "Mold growth can cause serious health risks and property damage if left untreated. Our certified mold specialists inspect, remove, and prevent mold with advanced, eco-friendly treatments. Breathe easy again with our trusted services.",
+      "Reviews": [
+        {
+          "name": "Carlos R.",
+          "review": "The team did a thorough job and helped us understand how to prevent future mold issues."
+        },
+        {
+          "name": "Emily T.",
+          "review": "Quick, clean, and professional. You can't even tell there was ever a mold problem!"
+        }
+      ],
+      "FAQ": [
+        {
+          "Question": "How do I know if I have a mold problem?",
+          "Answer": "Signs include musty smells, visible growth, and allergy symptoms. We offer free inspections to confirm."
+        },
+        {
+          "Question": "Is your mold removal process safe?",
+          "Answer": "Yes, we use non-toxic, eco-friendly methods that are safe for children and pets."
+        }
+      ],
+      "CTA": {
+        "Title": "Worried About Mold?",
+        "Description": "Schedule your free mold inspection today and let our experts handle the rest."
+      }
+    }
+  ]
+}

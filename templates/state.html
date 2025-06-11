@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AC Repair Services in Texas - Elite AC Repair</title>
+    <title>{{required.get("Main Service")}} Services in {{state_name}} - {{required.get("Business Name")}}</title>
     <style>
         * {
             margin: 0;
@@ -220,7 +220,7 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <h1>Elite AC Repair</h1>
+                <h1>{{required.get("Business Name")}}</h1>
             </div>
             <nav>
                 <ul>
@@ -231,20 +231,20 @@
                 </ul>
             </nav>
             <div class="header-phone">
-                📞 (800) 555-COOL
+                📞 {{required.get("Phone")}}
             </div>
         </div>
     </header>
 
     <div class="hero">
-        <h1>AC Repair Services in Texas</h1>
-        <p>Professional air conditioning repair, installation, and maintenance across the Lone Star State</p>
+        <h1>{{required.get("Main Service")}} Services in {{state_name}}</h1>
+        <p>Professional {{required.get("Main Service")}} services across {{state_name}}</p>
     </div>
 
     <main>
         <section>
-            <h2>Our Services in Texas</h2>
-            <p>We provide comprehensive air conditioning services throughout Texas, serving both residential and commercial customers with fast, reliable service.</p>
+            <h2>Our Services in {{state_name}}</h2>
+            <p>We provide comprehensive {{required.get("Main Service")}} services throughout {{state_name}}, serving both residential and commercial customers with fast, reliable service.</p>
             
             <div class="services-grid">
                 <div class="service-item">
@@ -275,83 +275,28 @@
         </section>
 
         <section>
-            <h2>Cities We Serve in Texas</h2>
-            <p>Elite AC Repair provides professional air conditioning services across major Texas cities. Click on your city to learn more about our local services.</p>
+            <h2>Cities We Serve in {{state_name}}</h2>
+            <p>{{required.get("Business Name")}} provides professional {{required.get("Main Service")}} services across major {{state_name}} cities. Click on your city to learn more about our local services.</p>
             
             <div class="cities-grid">
+                {% for city, link in city_links.items() %}
                 <div class="city-item">
-                    <a href="/houston-ac-repair">Houston</a>
+                    <a href="{{link}}">{{ city | capitalize }}</a>
                 </div>
-                <div class="city-item">
-                    <a href="/dallas-ac-repair">Dallas</a>
-                </div>
-                <div class="city-item">
-                    <a href="/austin-ac-repair">Austin</a>
-                </div>
-                <div class="city-item">
-                    <a href="/san-antonio-ac-repair">San Antonio</a>
-                </div>
-                <div class="city-item">
-                    <a href="/fort-worth-ac-repair">Fort Worth</a>
-                </div>
-                <div class="city-item">
-                    <a href="/el-paso-ac-repair">El Paso</a>
-                </div>
-                <div class="city-item">
-                    <a href="/arlington-ac-repair">Arlington</a>
-                </div>
-                <div class="city-item">
-                    <a href="/corpus-christi-ac-repair">Corpus Christi</a>
-                </div>
-                <div class="city-item">
-                    <a href="/plano-ac-repair">Plano</a>
-                </div>
-                <div class="city-item">
-                    <a href="/lubbock-ac-repair">Lubbock</a>
-                </div>
-                <div class="city-item">
-                    <a href="/laredo-ac-repair">Laredo</a>
-                </div>
-                <div class="city-item">
-                    <a href="/irving-ac-repair">Irving</a>
-                </div>
-                <div class="city-item">
-                    <a href="/garland-ac-repair">Garland</a>
-                </div>
-                <div class="city-item">
-                    <a href="/frisco-ac-repair">Frisco</a>
-                </div>
-                <div class="city-item">
-                    <a href="/mckinney-ac-repair">McKinney</a>
-                </div>
-                <div class="city-item">
-                    <a href="/amarillo-ac-repair">Amarillo</a>
-                </div>
-                <div class="city-item">
-                    <a href="/grand-prairie-ac-repair">Grand Prairie</a>
-                </div>
-                <div class="city-item">
-                    <a href="/brownsville-ac-repair">Brownsville</a>
-                </div>
-                <div class="city-item">
-                    <a href="/pasadena-ac-repair">Pasadena</a>
-                </div>
-                <div class="city-item">
-                    <a href="/mesquite-ac-repair">Mesquite</a>
-                </div>
+                {% endfor %}
             </div>
         </section>
 
         <section>
-            <h2>Why Choose Elite AC Repair in Texas?</h2>
+            <h2>Why Choose {{required.get("Business Name")}} in {{state_name}}?</h2>
             <div class="services-grid">
                 <div class="service-item">
                     <h4>Licensed & Insured</h4>
-                    <p>Fully licensed and insured technicians in all Texas locations</p>
+                    <p>Fully licensed and insured technicians in all {{state_name}} locations</p>
                 </div>
                 <div class="service-item">
                     <h4>Same-Day Service</h4>
-                    <p>Fast response times across all Texas cities we serve</p>
+                    <p>Fast response times across all {{state_name}} cities we serve</p>
                 </div>
                 <div class="service-item">
                     <h4>Upfront Pricing</h4>
@@ -366,12 +311,12 @@
     </main>
 
     <footer>
-        <h3>Elite AC Repair - Texas</h3>
-        <p>📞 Phone: (800) 555-COOL</p>
-        <p>✉️ Email: info@eliteacrepair.com</p>
+        <h3>{{required.get("Business Name")}} - {{state_name}}</h3>
+        <p>📞 Phone: {{required.get("Phone")}}</p>
+        <p>✉️ Email: {{required.get("Business Email")}}</p>
         <p>🕒 Hours: 24/7 Emergency Service Available</p>
-        <p>📍 Serving all major Texas cities</p>
-        <p style="margin-top: 1rem;">© 2024 Elite AC Repair. All rights reserved.</p>
+        <p>📍 Serving all major {{state_name}} cities</p>
+        <p style="margin-top: 1rem;">© 2025 {{required.get("Business Name")}} {{state_name}}. All rights reserved.</p>
     </footer>
 </body>
 </html>

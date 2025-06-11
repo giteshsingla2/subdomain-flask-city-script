@@ -5,5 +5,6 @@
     "Business Logo": "/logo.png",
     "Business Email": "contact@google.com",
     "Main Service" : "Mold",
-    "Favicon": "https://example.com/git.png"
+    "Favicon": "https://example.com/git.png",
+    "Logo": "https://example.com/logo.png"
  }

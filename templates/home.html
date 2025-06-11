@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite AC Repair - Nationwide Air Conditioning Services</title>
+    <title>{{required.business_name}} - Nationwide {{required.main_service}} Services</title>
     <style>
         * {
             margin: 0;
@@ -257,7 +257,7 @@
     <header>
         <div class="header-content">
             <div class="logo">
-                <h1>Elite AC Repair</h1>
+                <h1>{{required.business_name}}</h1>
             </div>
             <nav>
                 <ul>
@@ -268,16 +268,16 @@
                 </ul>
             </nav>
             <div class="header-contact">
-                <a href="tel:1-800-AC-REPAIR">1-800-AC-REPAIR</a>
+                <a href="tel:{{required.phone_number}}">{{required.phone_number}}</a>
             </div>
         </div>
     </header>
 
     <main>
         <section class="hero" id="home">
-            <h1>Nationwide AC Repair & Installation</h1>
-            <p>Professional air conditioning services across the United States. Fast, reliable, and affordable HVAC solutions for your home or business.</p>
-            <a href="tel:1-800-AC-REPAIR" class="cta-button">Call Now for Service</a>
+            <h1>Nationwide {{required.main_service}}</h1>
+            <p>Professional {{required.main_service}} services across the United States. Fast, reliable, and affordable {{required.main_service}} solutions for your home or business.</p>
+            <a href="tel:{{required.phone_number}}" class="cta-button">Call Now for Service</a>
         </section>
 
         <section class="services-section" id="services">
@@ -314,69 +314,20 @@
             <h2>Service Areas</h2>
             <p style="text-align: center; margin-bottom: 2rem; color: #666;">We provide professional AC repair and installation services in the following states:</p>
             <div class="states-grid">
+                {% for state, link in state_links.items() %}
                 <div class="state-item">
-                    <a href="/texas/">Texas</a>
+                    <a href="{{link}}">{{ state | capitalize }}</a>
                 </div>
-                <div class="state-item">
-                    <a href="/florida/">Florida</a>
-                </div>
-                <div class="state-item">
-                    <a href="/california/">California</a>
-                </div>
-                <div class="state-item">
-                    <a href="/arizona/">Arizona</a>
-                </div>
-                <div class="state-item">
-                    <a href="/nevada/">Nevada</a>
-                </div>
-                <div class="state-item">
-                    <a href="/georgia/">Georgia</a>
-                </div>
-                <div class="state-item">
-                    <a href="/north-carolina/">North Carolina</a>
-                </div>
-                <div class="state-item">
-                    <a href="/south-carolina/">South Carolina</a>
-                </div>
-                <div class="state-item">
-                    <a href="/alabama/">Alabama</a>
-                </div>
-                <div class="state-item">
-                    <a href="/tennessee/">Tennessee</a>
-                </div>
-                <div class="state-item">
-                    <a href="/louisiana/">Louisiana</a>
-                </div>
-                <div class="state-item">
-                    <a href="/mississippi/">Mississippi</a>
-                </div>
-                <div class="state-item">
-                    <a href="/arkansas/">Arkansas</a>
-                </div>
-                <div class="state-item">
-                    <a href="/oklahoma/">Oklahoma</a>
-                </div>
-                <div class="state-item">
-                    <a href="/new-mexico/">New Mexico</a>
-                </div>
-                <div class="state-item">
-                    <a href="/virginia/">Virginia</a>
-                </div>
-                <div class="state-item">
-                    <a href="/maryland/">Maryland</a>
-                </div>
-                <div class="state-item">
-                    <a href="/delaware/">Delaware</a>
-                </div>
+                {% endfor %}
             </div>
         </section>
     </main>
 
     <footer id="contact">
-        <h3>Elite AC Repair</h3>
-        <p>Nationwide Air Conditioning Services</p>
-        <p>Phone: <a href="tel:1-800-AC-REPAIR">1-800-AC-REPAIR</a></p>
-        <p>Email: <a href="mailto:info@eliteacrepair.com">info@eliteacrepair.com</a></p>
+        <h3>{{required.business_name}}</h3>
+        <p>Nationwide {{required.main_service}} Services</p>
+        <p>Phone: <a href="tel:{{required.phone_number}}">{{required.phone_number}}</a></p>
+        <p>Email: <a href="mailto:{{required.email}}">{{required.email}}</a></p>
         <p>Licensed & Insured | 24/7 Emergency Service</p>
         <p>&copy; 2025 {{required.business_name}}. All rights reserved.</p>
     </footer>
