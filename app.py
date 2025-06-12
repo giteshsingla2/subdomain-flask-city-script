@@ -63,6 +63,28 @@ def get_main_domain():
     main_domain = ".".join(host.split('.')[-2:])
     return main_domain
 
+def parse_subdomain():
+    """Parse the subdomain to extract main_service, city, and state.
+    
+    Returns:
+        tuple: (main_service, city_subdomain, state_subdomain)
+    """
+    host = request.host
+    subdomains = host.split('.')[0].split('-')
+    
+    # Check if we have at least 3 parts: main-service, city, state
+    if len(subdomains) >= 3:
+        # The last part is the state
+        state_subdomain = subdomains[-1]
+        # The first part is the main service
+        main_service = subdomains[0]
+        # Everything in between is the city
+        city_subdomain = '-'.join(subdomains[1:-1])
+        return main_service, city_subdomain, state_subdomain
+    else:
+        # Not enough parts for the new format
+        return None, None, None
+
 def load_json_for_request():
     main_domain = get_main_domain()
     domain_path = f"domains/{main_domain}/"
@@ -168,17 +190,21 @@ def get_service_content(service_url, city_name, state_abbreviation, state_full_n
 
             # Prepare FAQ for the specific service
             service_faqs = []
-            if current_service_data.get("FAQ"):
-                for faq_item in current_service_data["FAQ"]:
+            # Check for both uppercase and lowercase keys for FAQ
+            faq_data = current_service_data.get("FAQ") or current_service_data.get("faqs", [])
+            if faq_data:
+                for faq_item in faq_data:
                     service_faqs.append({
-                        "Question": replace_placeholders(faq_item.get("Question", ""), service_name_for_placeholders, city_name, state_abbreviation, state_full_name, required_data, zip_codes, city_zip_code),
-                        "Answer": Markup(replace_placeholders(faq_item.get("Answer", ""), service_name_for_placeholders, city_name, state_abbreviation, state_full_name, required_data, zip_codes, city_zip_code))
+                        "question": replace_placeholders(faq_item.get("Question", ""), service_name_for_placeholders, city_name, state_abbreviation, state_full_name, required_data, zip_codes, city_zip_code),
+                        "answer": Markup(replace_placeholders(faq_item.get("Answer", ""), service_name_for_placeholders, city_name, state_abbreviation, state_full_name, required_data, zip_codes, city_zip_code))
                     })
 
             # Prepare Reviews for the specific service
             service_reviews = []
-            if current_service_data.get("Reviews"):
-                for review_item in current_service_data["Reviews"]:
+            # Check for both uppercase and lowercase keys for reviews
+            review_data = current_service_data.get("Reviews") or current_service_data.get("reviews", [])
+            if review_data:
+                for review_item in review_data:
                     service_reviews.append({
                         "name": review_item.get("name"),
                         "review": Markup(replace_placeholders(review_item.get("review", ""), service_name_for_placeholders, city_name, state_abbreviation, state_full_name, required_data, zip_codes, city_zip_code))
@@ -200,8 +226,8 @@ def get_service_content(service_url, city_name, state_abbreviation, state_full_n
                 "Meta Description": processed_service_data.get("Meta Description", ""),
                 "Blog Content": processed_service_data.get("Blog Content", ""), # Assuming Blog Content is a string that needs replacement
                 "CTA": processed_service_data.get("CTA", ""), # Assuming CTA is a string that needs replacement
-                "FAQ": service_faqs, # Use already processed FAQs
-                "Reviews": service_reviews, # Use already processed Reviews
+                "faqs": service_faqs, # Use already processed FAQs
+                "reviews": service_reviews, # Use already processed Reviews
                 # Add any other fields from services.json that service.html might need
                 # For example, if there are specific images, etc.
             }
@@ -235,7 +261,19 @@ def get_random_faqs(city_name, state_abbreviation, json_data, zip_codes, city_zi
     return selected_faqs
 
 def get_zip_codes_from_db(city_name):
-    return db_cache.zip_codes.get(city_name.lower(), [])
+    # Make sure we're using lowercase for lookup
+    city_key = city_name.lower()
+    # Get zip codes for this city
+    zip_codes = db_cache.zip_codes.get(city_key, [])
+    # If no zip codes found, try to find the city in the keys with partial matching
+    if not zip_codes:
+        for city_in_cache in db_cache.zip_codes.keys():
+            if city_key in city_in_cache or city_in_cache in city_key:
+                zip_codes = db_cache.zip_codes.get(city_in_cache, [])
+                if zip_codes:
+                    break
+    # Ensure we're returning a list of strings
+    return [str(zip_code) for zip_code in zip_codes] if zip_codes else []
 
 def get_canonical_url():
     return f"https://{request.host}{request.path}"
@@ -294,10 +332,21 @@ def handle_home():
             if state_exists(state_subdomain):
                 state_name = get_state_full_name(state_subdomain)
                 cities = get_cities_in_state(state_subdomain)
-                city_links = {
-                        city.replace(' ', '-'): f"https://{city.replace(' ', '-')}-{state_subdomain}.{get_main_domain()}"
-                        for city in cities
-                    }
+                # Get the main service from required data
+                main_service_name = required_data.get("Main Service", "").lower().replace(" ", "-")
+                
+                # Create city links with main service in the URL
+                city_links = {}
+                for city in cities:
+                    city_slug = city.replace(' ', '-')
+                    # Only support new format: main-service-city-state.domain.com
+                    if main_service_name:
+                        city_links[city] = f"https://{main_service_name}-{city_slug}-{state_subdomain}.{get_main_domain()}"
+                    else:
+                        # If no main service is defined, we still need to create links
+                        # This should be rare, as main service should be defined
+                        abort(404)
+                
                 return render_template(
                         'state.html',
                         state_name=state_name,
@@ -310,8 +359,11 @@ def handle_home():
             else:
                 abort(404)
         elif len(subdomains) >= 2:
-            city_subdomain = '-'.join(subdomains[:-1])
-            state_subdomain = subdomains[-1]
+            # Only support the new format (main-service-city-state)
+            main_service, city_subdomain, state_subdomain = parse_subdomain()
+            if not (main_service and city_subdomain and state_subdomain):
+                # No fallback - only support new format
+                abort(404)
             city_info = get_city_info(city_subdomain, state_subdomain)
             if city_info:
                 city_name = city_info['city_name'].title()
@@ -349,10 +401,20 @@ def handle_home():
                 services_list_for_template = []
                 if json_data.get("services") and json_data["services"].get("Services"):
                     for service_item in json_data["services"]["Services"]:
-                        services_list_for_template.append({
-                            "name": service_item.get("Service Name"),
-                                "url": f"https://{city_subdomain}-{state_subdomain}.{get_main_domain()}/{service_item.get('slug')}",
-                                # Add other service details if needed by city.html, like a short description
+                        # Use the main service in the URL if available
+                        if main_service:
+                            # For new format: main-service-city-state.domain.com
+                            services_list_for_template.append({
+                                "name": service_item.get("Service Name"),
+                                "url": f"/{service_item.get('slug')}",
+                                "description": service_item.get("Short Description", "")
+                            })
+                        else:
+                            # For old format: city-state.domain.com
+                            services_list_for_template.append({
+                                "name": service_item.get("Service Name"),
+                                "url": f"/{service_item.get('slug')}",
+                                "description": service_item.get("Short Description", "")
                             })
 
                 # Prepare FAQ from maincontent
@@ -417,56 +479,47 @@ def handle_home():
                 
             else:
                 abort(404)
-        abort(404)
+        else:
+            abort(404)
 
 @app.route('/<service_url>')
 def service_page(service_url):
     host = request.host
     json_data = request.json_data
     required_data = json_data.get("required", {}) # Use .get for safety
-    subdomains = host.split('.')[0].split('-')
-    if len(subdomains) >= 2:
-        city_subdomain = '-'.join(subdomains[:-1])
-        state_subdomain = subdomains[-1]
-        city_info = get_city_info(city_subdomain, state_subdomain)
-        if city_info and state_exists(state_subdomain):
-            city_name = city_info['city_name'].title()
-            city_zip_code = city_info['zip_code']
-            state_name = get_state_full_name(state_subdomain)
-            state_abbreviation = state_subdomain.upper()
-            zip_codes = get_zip_codes_from_db(city_name)
-            
-            # Call the refactored get_service_content
-            service_content = get_service_content(
-                service_url,
-                city_name,
-                state_abbreviation,
-                state_name,
-                json_data,
-                zip_codes,
-                city_zip_code
-            )
+    # Only support the new format (main-service-city-state)
+    main_service, city_subdomain, state_subdomain = parse_subdomain()
+    if not (main_service and city_subdomain and state_subdomain):
+        # No fallback - only support new format
+        abort(404)
+    
+    city_info = get_city_info(city_subdomain, state_subdomain)
+    if city_info and state_exists(state_subdomain):
+        city_name = city_info['city_name'].title()
+        city_zip_code = city_info['zip_code']
+        state_name = get_state_full_name(state_subdomain)
+        state_abbreviation = state_subdomain.upper()
+        zip_codes = get_zip_codes_from_db(city_name)
+        
+        # Call the refactored get_service_content
+        main_service_name = main_service if main_service else required_data.get("Main Service", "")
+        service_content = get_service_content(
+            service_url,
+            city_name,
+            state_abbreviation,
+            state_name,
+            json_data,
+            zip_codes,
+            city_zip_code
+        )
 
-            if service_content:
-                service_name_for_placeholders = service_content.get("Service Name", "")
+        if service_content:
+            service_name_for_placeholders = service_content.get("Service Name", "")
 
-                # Use Title from service_content if available, otherwise construct a default
-                meta_title_template = service_content.get("Title") or f"{service_name_for_placeholders} in {{city_name}}, {{state_abbreviation}}"
-                meta_title = replace_placeholders(
-                        meta_title_template,
-                        service_name_for_placeholders,
-                        city_name,
-                        state_abbreviation,
-                        state_name,
-                        required_data,
-                        zip_codes,
-                        city_zip_code
-                    )
-
-                # Use Meta Description from service_content if available, otherwise construct a default
-                meta_description_template = service_content.get("Meta Description") or f"Get the best {service_name_for_placeholders} in {{city_name}}, {{state_abbreviation}}. Contact us today!"
-                meta_description = replace_placeholders(
-                    meta_description_template,
+            # Use Title from service_content if available, otherwise construct a default
+            meta_title_template = service_content.get("Title") or f"{service_name_for_placeholders} in {{city_name}}, {{state_abbreviation}}"
+            meta_title = replace_placeholders(
+                    meta_title_template,
                     service_name_for_placeholders,
                     city_name,
                     state_abbreviation,
@@ -476,22 +529,37 @@ def service_page(service_url):
                     city_zip_code
                 )
 
-                return render_template(
-                    'service.html',
-                    state_name=state_name,
-                    city_name=city_name,
-                    city_zip_code=city_zip_code,
-                    service=service_content,  # Pass the whole processed service_content dictionary
-                    meta_title=meta_title,
-                    meta_description=meta_description,
-                    required=required_data,
-                    canonical_url=get_canonical_url(),
-                    favicon=required_data.get("Favicon"), # Updated key
-                    main_service=required_data.get("Main Service"), 
-                    company_name=required_data.get("Business Name"), # Updated key
-                    zip_codes=zip_codes
-                    )
-        abort(404)
+            # Use Meta Description from service_content if available, otherwise construct a default
+            meta_description_template = service_content.get("Meta Description") or f"Get the best {service_name_for_placeholders} in {{city_name}}, {{state_abbreviation}}. Contact us today!"
+            meta_description = replace_placeholders(
+                meta_description_template,
+                service_name_for_placeholders,
+                city_name,
+                state_abbreviation,
+                state_name,
+                required_data,
+                zip_codes,
+                city_zip_code
+            )
+
+            return render_template(
+                'service.html',
+                state_name=state_name,
+                city_name=city_name,
+                city_zip_code=city_zip_code,
+                service=service_content,  # Pass the whole processed service_content dictionary
+                meta_title=meta_title,
+                meta_description=meta_description,
+                required=required_data,
+                canonical_url=get_canonical_url(),
+                favicon=required_data.get("Favicon"), # Updated key
+                main_service=required_data.get("Main Service"), 
+                company_name=required_data.get("Business Name"), # Updated key
+                zip_codes=zip_codes
+                )
+    
+    # If we get here, no valid city/state was found
+    abort(404)
 
 @app.route('/about')
 def about_page():
@@ -499,56 +567,61 @@ def about_page():
     json_data = request.json_data
     required_data = json_data.get("required", {})
     main_content_data = json_data.get("maincontent", {})
-    subdomains = host.split('.')[0].split('-')
+    
+    # Only support the new format (main-service-city-state)
+    main_service, city_subdomain, state_subdomain = parse_subdomain()
+    
+    if not (main_service and city_subdomain and state_subdomain):
+        # No fallback - only support new format
+        abort(404)
+    
+    city_info = get_city_info(city_subdomain, state_subdomain)
 
-    if len(subdomains) >= 2: # City-State specific page
-        city_subdomain = '-'.join(subdomains[:-1])
-        state_subdomain = subdomains[-1]
-        city_info = get_city_info(city_subdomain, state_subdomain)
+    if city_info and state_exists(state_subdomain):
+        city_name = city_info['city_name'].title()
+        city_zip_code = city_info['zip_code']
+        state_name = get_state_full_name(state_subdomain)
+        state_abbreviation = state_subdomain.upper()
+        zip_codes = get_zip_codes_from_db(city_name)
 
-        if city_info and state_exists(state_subdomain):
-            city_name = city_info['city_name'].title()
-            city_zip_code = city_info['zip_code']
-            state_name = get_state_full_name(state_subdomain)
-            state_abbreviation = state_subdomain.upper()
-            zip_codes = get_zip_codes_from_db(city_name)
+        about_us_content_template = main_content_data.get("About Content", "")
+        why_choose_us_content_template = main_content_data.get("Why Choose Us Content", "")
 
-            about_us_content_template = main_content_data.get("About Content", "")
-            why_choose_us_content_template = main_content_data.get("Why Choose Us Content", "")
+        about_us_content = Markup(replace_placeholders(
+            about_us_content_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+        ))
+        why_choose_us_content = Markup(replace_placeholders(
+            why_choose_us_content_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+        ))
 
-            about_us_content = Markup(replace_placeholders(
-                about_us_content_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-            ))
-            why_choose_us_content = Markup(replace_placeholders(
-                why_choose_us_content_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-            ))
+        meta_title_template = main_content_data.get("About Page Title", main_content_data.get("Title", "About Us - {company_name} in {city_name}, {state_abbreviation}"))
+        meta_title = replace_placeholders(
+            meta_title_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+        )
 
-            meta_title_template = main_content_data.get("About Page Title", main_content_data.get("Title", "About Us - {company_name} in {city_name}, {state_abbreviation}"))
-            meta_title = replace_placeholders(
-                meta_title_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+        meta_description_template = main_content_data.get("About Page Meta Description", main_content_data.get("Meta Description", "Learn more about {company_name} and why we are the best choice in {city_name}."))
+        meta_description = replace_placeholders(
+            meta_description_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
             )
 
-            meta_description_template = main_content_data.get("About Page Meta Description", main_content_data.get("Meta Description", "Learn more about {company_name} and why we are the best choice in {city_name}."))
-            meta_description = replace_placeholders(
-                meta_description_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-                )
-
-            return render_template(
-                'about.html', 
-                state_name=state_name,
-                city_name=city_name,
-                city_zip_code=city_zip_code,
-                required=required_data,
-                about_us_content=about_us_content,
-                why_choose_us_content=why_choose_us_content,
-                meta_title=meta_title,
-                meta_description=meta_description,
-                canonical_url=get_canonical_url(),
-                favicon=required_data.get("Favicon"),
-                company_name=required_data.get("Business Name"),
-                zip_codes=zip_codes
-                )
-        abort(404)
+        return render_template(
+            'about.html', 
+            state_name=state_name,
+            city_name=city_name,
+            city_zip_code=city_zip_code,
+            required=required_data,
+            about_us_content=about_us_content,
+            why_choose_us_content=why_choose_us_content,
+            meta_title=meta_title,
+            meta_description=meta_description,
+            canonical_url=get_canonical_url(),
+            favicon=required_data.get("Favicon"),
+            company_name=required_data.get("Business Name"),
+            zip_codes=zip_codes
+            )
+    
+    # If we get here, no valid city/state was found
+    abort(404)
 
 @app.route('/contact')
 def contact_page():
@@ -556,126 +629,144 @@ def contact_page():
     json_data = request.json_data
     required_data = json_data.get("required", {})
     main_content_data = json_data.get("maincontent", {})
-    subdomains = host.split('.')[0].split('-')
-
-    if len(subdomains) >= 2: # City-State specific page
-        city_subdomain = '-'.join(subdomains[:-1])
-        state_subdomain = subdomains[-1]
-        city_info = get_city_info(city_subdomain, state_subdomain)
-
-        if city_info and state_exists(state_subdomain): # Added state_exists check for consistency
-            city_name = city_info['city_name'].title()
-            city_zip_code = city_info['zip_code']
-            state_name = get_state_full_name(state_subdomain)
-            state_abbreviation = state_subdomain.upper()
-            zip_codes = get_zip_codes_from_db(city_name)
-
-            # Use Address from required.json directly if available, otherwise use template
-            # Assuming 'Address' in required.json is a pre-formatted string or a structured object
-            # For this example, let's assume 'Address' in required.json is the string to use.
-            # If it's a template like before, the old logic can be adapted.
-            address = replace_placeholders(
-                required_data.get('Address', f"{{company_name}}\n{{city_name}}, {{state_abbreviation}} {{zip_code}}"),
-                "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-                )
-
-            meta_title_template = main_content_data.get("Contact Page Title", main_content_data.get("Title", "Contact {company_name} in {city_name}, {state_abbreviation}"))
-            meta_title = replace_placeholders(
-                meta_title_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-                )
-                
-            meta_description_template = main_content_data.get("Contact Page Meta Description", main_content_data.get("Meta Description", "Contact {company_name} for {main_service} services in {city_name}. Get a free quote today!"))
-            meta_description = replace_placeholders(
-                meta_description_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-                )
-
-            contact_cta_template = main_content_data.get("CTA", {}).get("Text", "Reach out to us for expert advice and service.")
-            contact_cta = Markup(replace_placeholders(
-                contact_cta_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-                ))
-
-            return render_template(
-                'contact.html',
-                state_name=state_name,
-                city_name=city_name,
-                city_zip_code=city_zip_code,
-                required=required_data, # Contains Phone, Email, Business Name, etc.
-                    address=Markup(address.replace('\n', '<br>')) if address else None, # Pass formatted address
-                    contact_cta=contact_cta,
-                meta_title=meta_title,
-                meta_description=meta_description,
-                canonical_url=get_canonical_url(),
-                favicon=required_data.get("Favicon"),
-                company_name=required_data.get("Business Name"),
-                zip_codes=zip_codes
-                )
+    
+    # Only support the new format (main-service-city-state)
+    main_service, city_subdomain, state_subdomain = parse_subdomain()
+    
+    if not (main_service and city_subdomain and state_subdomain):
+        # No fallback - only support new format
         abort(404)
+    
+    city_info = get_city_info(city_subdomain, state_subdomain)
+
+    if city_info and state_exists(state_subdomain): # Added state_exists check for consistency
+        city_name = city_info['city_name'].title()
+        city_zip_code = city_info['zip_code']
+        state_name = get_state_full_name(state_subdomain)
+        state_abbreviation = state_subdomain.upper()
+        zip_codes = get_zip_codes_from_db(city_name)
+
+        # Use Address from required.json directly if available, otherwise use template
+        # Assuming 'Address' in required.json is a pre-formatted string or a structured object
+        # For this example, let's assume 'Address' in required.json is the string to use.
+        # If it's a template like before, the old logic can be adapted.
+        address = replace_placeholders(
+            required_data.get('Address', f"{{company_name}}\n{{city_name}}, {{state_abbreviation}} {{zip_code}}"),
+            "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+            )
+
+        meta_title_template = main_content_data.get("Contact Page Title", main_content_data.get("Title", "Contact {company_name} in {city_name}, {state_abbreviation}"))
+        meta_title = replace_placeholders(
+            meta_title_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+            )
+            
+        meta_description_template = main_content_data.get("Contact Page Meta Description", main_content_data.get("Meta Description", "Contact {company_name} for {main_service} services in {city_name}. Get a free quote today!"))
+        meta_description = replace_placeholders(
+            meta_description_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+            )
+
+        contact_cta_template = main_content_data.get("CTA", {}).get("Text", "Reach out to us for expert advice and service.")
+        contact_cta = Markup(replace_placeholders(
+            contact_cta_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+            ))
+
+        return render_template(
+            'contact.html',
+            state_name=state_name,
+            city_name=city_name,
+            city_zip_code=city_zip_code,
+            required=required_data, # Contains Phone, Email, Business Name, etc.
+            address=Markup(address.replace('\n', '<br>')) if address else None, # Pass formatted address
+            contact_cta=contact_cta,
+            meta_title=meta_title,
+            meta_description=meta_description,
+            canonical_url=get_canonical_url(),
+            favicon=required_data.get("Favicon"),
+            company_name=required_data.get("Business Name"),
+            zip_codes=zip_codes
+            )
+    
+    # If we get here, no valid city/state was found
+    abort(404)
 
 @app.route('/services')
 def services_page():
-        host = request.host
-        json_data = request.json_data
-        required_data = json_data.get("required", {})
-        main_content_data = json_data.get("maincontent", {})
-        raw = json_data.get("services", {})
-        # if you normalized it at load time it’ll be a dict {"Services": [...]} 
-        if isinstance(raw, dict):
-            services_list_src = raw.get("Services", [])
-        else:
-            # in case someone left it as a flat list
-            services_list_src = raw
+    host = request.host
+    json_data = request.json_data
+    required_data = json_data.get("required", {})
+    main_content_data = json_data.get("maincontent", {})
+    raw = json_data.get("services", {})
+    # if you normalized it at load time it'll be a dict {"Services": [...]} 
+    if isinstance(raw, dict):
+        services_list_src = raw.get("Services", [])
+    else:
+        # in case someone left it as a flat list
+        services_list_src = raw
 
-        subdomains = host.split('.')[0].split('-')
-
-        if len(subdomains) >= 2: # City-State specific page
-            city_subdomain = '-'.join(subdomains[:-1])
-            state_subdomain = subdomains[-1]
-            city_info = get_city_info(city_subdomain, state_subdomain)
-
-            if city_info and state_exists(state_subdomain):
-                city_name = city_info['city_name'].title()
-                city_zip_code = city_info['zip_code']
-                state_name = get_state_full_name(state_subdomain)
-                state_abbreviation = state_subdomain.upper()
-                zip_codes = get_zip_codes_from_db(city_name)
-
-                services_list = []
-                for service_item in services_list_src:
-                    service_name = service_item.get("Service Name")
-                    service_slug = service_item.get("slug")
-                    if service_name and service_slug:
-                        # Apply placeholder replacement to service name if needed, though typically not for a listing
-                        # For this example, we'll assume the Service Name in services.json is final
-                        services_list.append({
-                            "name": service_name,
-                            "url": f"/{service_slug}" # Construct URL from slug
-                        })
-
-                meta_title_template = main_content_data.get("Services Page Title", main_content_data.get("Title", "Our Services in {city_name}, {state_abbreviation} - {company_name}"))
-                meta_title = replace_placeholders(
-                    meta_title_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-                )
-                
-                meta_description_template = main_content_data.get("Services Page Meta Description", main_content_data.get("Meta Description", "Explore the range of services offered by {company_name} in {city_name}. Contact us for more information."))
-                meta_description = replace_placeholders(
-                    meta_description_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-                )
-
-                return render_template(
-                    'services.html',
-                    state_name=state_name,
-                    city_name=city_name,
-                    city_zip_code=city_zip_code,
-                    services_list=services_list,
-                    meta_title=meta_title,
-                    meta_description=meta_description,
-                    required=required_data,
-                    canonical_url=get_canonical_url(),
-                    favicon=required_data.get("Favicon"), # Corrected key
-                    company_name=required_data.get("Business Name"), # Corrected key
-                    zip_codes=zip_codes
-                )
+    # Only support the new format (main-service-city-state)
+    main_service, city_subdomain, state_subdomain = parse_subdomain()
+    
+    if not (main_service and city_subdomain and state_subdomain):
+        # No fallback - only support new format
         abort(404)
+    
+    city_info = get_city_info(city_subdomain, state_subdomain)
+
+    if city_info and state_exists(state_subdomain):
+        city_name = city_info['city_name'].title()
+        city_zip_code = city_info['zip_code']
+        state_name = get_state_full_name(state_subdomain)
+        state_abbreviation = state_subdomain.upper()
+        zip_codes = get_zip_codes_from_db(city_name)
+
+        services_list = []
+        for service_item in services_list_src:
+            service_name = service_item.get("Service Name")
+            service_slug = service_item.get("slug")
+            if service_name and service_slug:
+                # Apply placeholder replacement to service name if needed, though typically not for a listing
+                # For this example, we'll assume the Service Name in services.json is final
+                # Use the main service in the URL if available
+                if main_service:
+                    # For new format: main-service-city-state.domain.com
+                    services_list.append({
+                        "name": service_name,
+                        "url": f"/{service_slug}" # Construct URL from slug
+                    })
+                else:
+                    # For old format: city-state.domain.com
+                    services_list.append({
+                        "name": service_name,
+                        "url": f"/{service_slug}" # Construct URL from slug
+                    })
+
+        meta_title_template = main_content_data.get("Services Page Title", main_content_data.get("Title", "Our Services in {city_name}, {state_abbreviation} - {company_name}"))
+        meta_title = replace_placeholders(
+            meta_title_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+        )
+        
+        meta_description_template = main_content_data.get("Services Page Meta Description", main_content_data.get("Meta Description", "Explore the range of services offered by {company_name} in {city_name}. Contact us for more information."))
+        meta_description = replace_placeholders(
+            meta_description_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
+        )
+
+        return render_template(
+            'services.html',
+            state_name=state_name,
+            city_name=city_name,
+            city_zip_code=city_zip_code,
+            services_list=services_list,
+            meta_title=meta_title,
+            meta_description=meta_description,
+            required=required_data,
+            canonical_url=get_canonical_url(),
+            favicon=required_data.get("Favicon"), # Corrected key
+            company_name=required_data.get("Business Name"), # Corrected key
+            zip_codes=zip_codes
+        )
+    
+    # If we get here, no valid city/state was found
+    abort(404)
 
 @app.route('/update-json/<filename>', methods=['POST'])
 def update_json(filename):
