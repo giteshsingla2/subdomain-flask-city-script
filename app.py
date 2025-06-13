@@ -809,6 +809,23 @@ def services_page():
         meta_description = replace_placeholders(
             meta_description_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
         )
+        
+        # Process main_content_data for HTML rendering and placeholder replacement
+        processed_main_content = {}
+        for key, value in main_content_data.items():
+            if isinstance(value, str):
+                processed_main_content[key] = Markup(replace_placeholders(value, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code))
+            elif isinstance(value, dict) and key == "CTA":
+                # Special handling for CTA dictionary
+                processed_cta = {}
+                for cta_key, cta_value in value.items():
+                    if isinstance(cta_value, str):
+                        processed_cta[cta_key] = Markup(replace_placeholders(cta_value, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code))
+                    else:
+                        processed_cta[cta_key] = cta_value
+                processed_main_content[key] = processed_cta
+            else:
+                processed_main_content[key] = value
 
         return render_template(
             'services.html',
@@ -822,7 +839,9 @@ def services_page():
             canonical_url=get_canonical_url(),
             favicon=required_data.get("Favicon"), # Corrected key
             company_name=required_data.get("Business Name"), # Corrected key
-            zip_codes=zip_codes
+            zip_codes=zip_codes,
+            main_content=processed_main_content,  # Pass processed main_content for template
+            maincontent=processed_main_content    # For backward compatibility
         )
     
     # If we get here, no valid city/state was found
