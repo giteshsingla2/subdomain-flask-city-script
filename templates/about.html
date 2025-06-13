@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About {{required.get("Company Name")}} - Your Trusted {{required.get("Main Service")}} Experts</title>
+    <title>About {{required.get("Business Name")}} - Your Trusted {{required.get("Main Service")}} Experts</title>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -494,7 +494,7 @@
     <header>
         <div class="header-container">
             <a href="/" class="logo">
-                <i class="fas fa-snowflake"></i> {{required.get("Company Name")}}
+                <i class="fas fa-snowflake"></i> {{required.get("Business Name")}}
             </a>
             <nav>
                 <ul class="nav-links">
@@ -514,18 +514,18 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1>About {{required.get("Company Name")}}</h1>
-            <p>Your trusted partner for reliable {{required.get("Main Service")}} solutions since {{required.get("Year")}}. We're committed to keeping {{city_name}} comfortable, one home at a time.</p>
+            <h1>About {{required.get("Business Name")}}</h1>
+            <p>Your trusted partner for reliable {{required.get("Main Service")}} solutions. We're committed to keeping {{city_name}} comfortable, one home at a time.</p>
         </div>
     </section>
 
     <main>
         <section class="about-section">
             <div class="about-content">
-            {{main_content.get("About Content")}}
+            {{maincontent.get("About Content")}}
             </div>
             <div class="about-image">
-                <img src="{{main_content.get("Image 1")}}" alt="{{required.get("Company Name")}} Team">
+                <img src="{{maincontent.get("Image 1")}}" alt="About {{required.get("Business Name")}}">
             </div>
         </section>
 
@@ -552,8 +552,8 @@
 
         <section class="cta-section">
             <div class="cta-content">
-                <h2>{{main_content.get("CTA", {}).get("Title")}}</h2>
-                <p>{{main_content.get("CTA", {}).get("Description")}}</p>
+                <h2>{{maincontent.get("CTA", {}).get("Title")}}</h2>
+                <p>{{maincontent.get("CTA", {}).get("Description")}}</p>
                 <a href="tel:+1{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}" class="cta-button">
                     <i class="fas fa-phone"></i> Call Now: {{required.get("Phone")}}
                 </a>
@@ -572,7 +572,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 {{required.get("Company Name")}} {{city_name}}. All rights reserved.</p>
+            <p>&copy; 2025  {{city_name}} {{required.get("Business Name")}}. All rights reserved.</p>
         </div>
     </footer>
 </body>

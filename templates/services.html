@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our AC Repair Services - Elite AC Repair</title>
+    <title>Our {{required.get("Main Service")}} Services - {{required.get("Business Name")}}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -109,21 +109,21 @@
                         <i class="fas fa-snowflake text-white text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold">Elite AC Repair</h1>
-                        <p class="text-blue-200 text-sm">Professional HVAC Services</p>
+                        <h1 class="text-2xl font-bold">{{required.get("Business Name")}}</h1>
+                        <p class="text-blue-200 text-sm">Professional {{required.get("Main Service")}} Services</p>
                     </div>
                 </div>
                 <nav class="hidden md:flex space-x-8">
-                    <a href="#" class="hover:text-orange-300 transition-colors duration-300 font-medium">Home</a>
-                    <a href="#" class="hover:text-orange-300 transition-colors duration-300 font-medium">About</a>
-                    <a href="#" class="text-orange-300 font-semibold">Services</a>
-                    <a href="#" class="hover:text-orange-300 transition-colors duration-300 font-medium">Contact</a>
+                    <a href="/" class="hover:text-orange-300 transition-colors duration-300 font-medium">Home</a>
+                    <a href="/about" class="hover:text-orange-300 transition-colors duration-300 font-medium">About</a>
+                    <a href="/services" class="text-orange-300 font-semibold">Services</a>
+                    <a href="/contact" class="hover:text-orange-300 transition-colors duration-300 font-medium">Contact</a>
                 </nav>
                 <div class="flex items-center space-x-4">
                     <div class="text-right hidden sm:block">
                         <p class="text-sm text-blue-200">Call Now</p>
-                        <a href="tel:(713) 555-0199" class="text-xl font-bold hover:text-orange-300 transition-colors duration-300">
-                            (713) 555-0199
+                        <a href="tel:{{ required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','') }}" class="text-xl font-bold hover:text-orange-300 transition-colors duration-300">
+                            {{required.get("Phone")}}
                         </a>
                     </div>
                     <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center hover-scale">
@@ -140,16 +140,12 @@
         <div class="container mx-auto px-6 relative z-10">
             <div class="text-center max-w-4xl mx-auto">
                 <h1 class="text-5xl md:text-6xl font-bold text-gradient mb-6 fade-in">
-                    Our Premium AC Services
+                    Our Premium {{required.get("Main Service")}} Services
                 </h1>
-                <p class="text-xl text-gray-600 mb-8 leading-relaxed fade-in fade-in-delay-1">
-                    Professional air conditioning services designed to keep your home comfortable year-round. 
-                    From emergency repairs to complete installations, our certified technicians deliver excellence.
-                </p>
                 <div class="flex flex-col sm:flex-row gap-6 justify-center items-center fade-in fade-in-delay-2">
-                    <a href="tel:(713) 555-0199" class="inline-flex items-center px-8 py-4 bg-orange-500 text-white font-semibold rounded-full hover-scale btn-glow">
-                        <i class="fas fa-phone mr-3"></i>
-                        Call (713) 555-0199
+                    <a href="tel:{{ required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','') }}" class="inline-flex items-center px-8 py-4 bg-orange-500 text-white font-semibold rounded-full hover-scale btn-glow">
+                        <i class="fas fa-phone mr-3 text-black"></i>
+                        <span class="text-black">Call {{required.get("Phone")}}</span>
                     </a>
                     <div class="flex items-center text-gray-600">
                         <i class="fas fa-clock text-orange-500 mr-2"></i>
@@ -167,11 +163,7 @@
     <section class="py-20 bg-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4 fade-in">Complete AC Solutions</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto fade-in fade-in-delay-1">
-                    From routine maintenance to emergency repairs, we provide comprehensive air conditioning services 
-                    to keep your system running efficiently and your home comfortable.
-                </p>
+                <h2 class="text-4xl font-bold text-gray-800 mb-4 fade-in">Services We Provide</h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {% for svc in services_list %}
@@ -187,7 +179,7 @@
                         <a href="{{ svc.url }}" class="block w-full text-center py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors duration-300">
                             Learn More
                         </a>
-                        <a href="tel:{{ required.get('Phone') }}" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
+                        <a href="tel:{{ required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','') }}" class="block w-full text-center py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg btn-glow">
                             <i class="fas fa-phone mr-2"></i>Call Now
                         </a>
                     </div>
@@ -200,14 +192,14 @@
     <!-- Call to Action -->
     <section class="py-20 gradient-bg text-white">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-4xl font-bold mb-6">Ready to Fix Your AC?</h2>
+            <h2 class="text-4xl font-bold mb-6">{{main_content.get("CTA", {}).get("Title")}}</h2>
             <p class="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
-                Don't wait for your AC problems to get worse. Contact our expert technicians today for fast, reliable service you can trust.
+                {{main_content.get("CTA", {}).get("Description")}}
             </p>
             <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <a href="tel:(713) 555-0199" class="inline-flex items-center px-10 py-5 bg-orange-500 text-white font-bold text-xl rounded-full hover-scale btn-glow">
+                <a href="tel:{{ required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','') }}" class="inline-flex items-center px-10 py-5 bg-orange-500 text-white font-bold text-xl rounded-full hover-scale btn-glow">
                     <i class="fas fa-phone mr-3"></i>
-                    Call (713) 555-0199
+                    Call {{required.get("Phone")}}
                 </a>
                 <div class="flex items-center text-blue-200">
                     <i class="fas fa-clock mr-2"></i>
@@ -226,22 +218,11 @@
                         <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
                             <i class="fas fa-snowflake text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold">Elite AC Repair</h3>
+                        <h3 class="text-2xl font-bold">{{required.get("Business Name")}}</h3>
                     </div>
                     <p class="text-gray-400 mb-4">
-                        Professional HVAC services in Houston and surrounding areas. Licensed, insured, and committed to your comfort.
+                        Professional {{required.get("Main Service")}} services in {{required.get("City")}} and surrounding areas. Licensed, insured, and committed to your comfort.
                     </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors duration-300">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors duration-300">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors duration-300">
-                            <i class="fab fa-google"></i>
-                        </a>
-                    </div>
                 </div>
                 
                 <div>
@@ -249,15 +230,15 @@
                     <div class="space-y-3">
                         <div class="flex items-center">
                             <i class="fas fa-phone text-orange-500 mr-3"></i>
-                            <a href="tel:(713) 555-0199" class="hover:text-orange-300 transition-colors duration-300">(713) 555-0199</a>
+                            <a href="tel:{{ required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','') }}" class="hover:text-orange-300 transition-colors duration-300">{{required.get("Phone")}}</a>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-envelope text-orange-500 mr-3"></i>
-                            <a href="mailto:info@eliteacrepair.com" class="hover:text-orange-300 transition-colors duration-300">info@eliteacrepair.com</a>
+                            <a href="mailto:{{required.get("Email")}}" class="hover:text-orange-300 transition-colors duration-300">{{required.get("Email")}}</a>
                         </div>
                         <div class="flex items-start">
                             <i class="fas fa-map-marker-alt text-orange-500 mr-3 mt-1"></i>
-                            <span>123 Main Street<br>Houston, TX 77001</span>
+                            <span>{{required.get("Address")}}</span>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-clock text-orange-500 mr-3"></i>
@@ -265,23 +246,11 @@
                         </div>
                     </div>
                 </div>
-                
-                <div>
-                    <h4 class="text-xl font-semibold mb-4">Our Services</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-orange-300 transition-colors duration-300">AC Repair</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-orange-300 transition-colors duration-300">AC Installation</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-orange-300 transition-colors duration-300">AC Maintenance</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-orange-300 transition-colors duration-300">Heating Services</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-orange-300 transition-colors duration-300">Emergency Service</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-orange-300 transition-colors duration-300">AC Inspection</a></li>
-                    </ul>
-                </div>
             </div>
             
             <div class="border-t border-gray-700 mt-8 pt-8 text-center">
                 <p class="text-gray-400">
-                    &copy; 2024 Elite AC Repair. All rights reserved. | Licensed & Insured HVAC Contractor
+                    &copy; 2025 {{required.get("Business Name")}}. All rights reserved. | Licensed & Insured {{required.get("Main Service")}} Contractor
                 </p>
             </div>
         </div>

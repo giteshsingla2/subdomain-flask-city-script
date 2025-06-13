@@ -231,7 +231,7 @@
                 </ul>
             </nav>
             <div class="header-phone">
-                📞 {{required.get("Phone")}}
+                <a href="tel:{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}">📞 {{required.get("Phone")}}</a>
             </div>
         </div>
     </header>
@@ -247,30 +247,12 @@
             <p>We provide comprehensive {{required.get("Main Service")}} services throughout {{state_name}}, serving both residential and commercial customers with fast, reliable service.</p>
             
             <div class="services-grid">
+                {% for svc in services_list %}
                 <div class="service-item">
-                    <h4>AC Repair</h4>
-                    <p>Fast emergency repairs for all AC brands and models</p>
+                    <h4>{{ svc.name }}</h4>
+                    <p>{{ svc.description }}</p>
                 </div>
-                <div class="service-item">
-                    <h4>AC Installation</h4>
-                    <p>Professional installation of new air conditioning systems</p>
-                </div>
-                <div class="service-item">
-                    <h4>AC Maintenance</h4>
-                    <p>Regular tune-ups to keep your system running efficiently</p>
-                </div>
-                <div class="service-item">
-                    <h4>HVAC Repair</h4>
-                    <p>Complete heating and cooling system repairs</p>
-                </div>
-                <div class="service-item">
-                    <h4>Duct Cleaning</h4>
-                    <p>Professional air duct cleaning and sanitization</p>
-                </div>
-                <div class="service-item">
-                    <h4>24/7 Emergency Service</h4>
-                    <p>Round-the-clock emergency AC repair services</p>
-                </div>
+                {% endfor %}
             </div>
         </section>
 

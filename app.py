@@ -1,4 +1,5 @@
 import random
+import hashlib
 from flask import Flask, render_template, request, abort, jsonify, Response
 from flask_caching import Cache
 import os
@@ -7,6 +8,9 @@ import sqlite3
 from datetime import datetime
 from markupsafe import Markup
 import urllib.parse
+
+# Cache for random seeds based on city-state pairs
+spintax_seed_cache = {}
 
 app = Flask(__name__,
                 template_folder="templates")
@@ -112,15 +116,31 @@ def load_json_for_request():
 def replace_placeholders(text, service_name, city_name, state_abbreviation, state_full_name, required_data, zip_codes=[], city_zip_code=""):
     import re
     pattern = r'\{([^}]*)\}'
+    
+    # Generate a consistent seed for this city-state pair
+    city_state_key = f"{city_name}|{state_abbreviation}"
+    
+    # Check if we already have a seed for this city-state pair
+    if city_state_key not in spintax_seed_cache:
+        # Create a reproducible seed by hashing the city-state key
+        hash_obj = hashlib.md5(city_state_key.encode())
+        seed_value = int(hash_obj.hexdigest(), 16) % (2**32)  # Convert to a 32-bit integer
+        spintax_seed_cache[city_state_key] = seed_value
+    
+    # Get the seed for this city-state pair
+    seed = spintax_seed_cache[city_state_key]
+    
+    # Create a random generator with the consistent seed
+    rng = random.Random(seed)
+    
     def random_replacer(match):
         options = match.group(1).split('|')
-        return random.choice(options)
+        return rng.choice(options)
         
-    # Step 1: Replace random choice patterns
+    # Step 1: Replace random choice patterns with consistent choices
     text = re.sub(pattern, random_replacer, text)
 
     # Step 2: Replace placeholders
-
     text = text.replace("[Service]", service_name)\
                 .replace("[service]", service_name.lower())\
                 .replace("[City-State]", f"{city_name}, {state_abbreviation}")\
@@ -440,8 +460,17 @@ def handle_home():
                 for key, value in main_content_data.items():
                     if isinstance(value, str):
                         processed_main_content[key] = Markup(replace_placeholders(value, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code))
+                    elif isinstance(value, dict) and key == "CTA":
+                        # Special handling for CTA dictionary
+                        processed_cta = {}
+                        for cta_key, cta_value in value.items():
+                            if isinstance(cta_value, str):
+                                processed_cta[cta_key] = Markup(replace_placeholders(cta_value, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code))
+                            else:
+                                processed_cta[cta_key] = cta_value
+                        processed_main_content[key] = processed_cta
                     else:
-                            processed_main_content[key] = value # Keep lists/dicts as is (e.g. FAQ, Reviews already processed)
+                        processed_main_content[key] = value # Keep other lists/dicts as is (e.g. FAQ, Reviews already processed)
 
                 # Fetch other cities in the same state
                 all_other_cities = get_other_cities_in_state(state_subdomain, city_info['city_name'])
@@ -452,7 +481,7 @@ def handle_home():
                         other_cities_to_display = rotated_cities[:10]
                         for city in other_cities_to_display:
                             city_subdomain_format = urllib.parse.quote(city.replace(' ', '-').lower())
-                            city_link = f"https://{city_subdomain_format}-{state_subdomain}.{get_main_domain()}"
+                            city_link = f"https://{main_service}-{city_subdomain_format}-{state_subdomain}.{get_main_domain()}"
                             other_city_links.append({
                                 'name': city,
                                 'link': city_link
@@ -584,15 +613,26 @@ def about_page():
         state_abbreviation = state_subdomain.upper()
         zip_codes = get_zip_codes_from_db(city_name)
 
-        about_us_content_template = main_content_data.get("About Content", "")
-        why_choose_us_content_template = main_content_data.get("Why Choose Us Content", "")
-
-        about_us_content = Markup(replace_placeholders(
-            about_us_content_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-        ))
-        why_choose_us_content = Markup(replace_placeholders(
-            why_choose_us_content_template, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code
-        ))
+        # Process main_content_data for HTML rendering and placeholder replacement
+        processed_main_content = {}
+        for key, value in main_content_data.items():
+            if isinstance(value, str):
+                processed_main_content[key] = Markup(replace_placeholders(value, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code))
+            elif isinstance(value, dict) and key == "CTA":
+                # Special handling for CTA dictionary
+                processed_cta = {}
+                for cta_key, cta_value in value.items():
+                    if isinstance(cta_value, str):
+                        processed_cta[cta_key] = Markup(replace_placeholders(cta_value, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code))
+                    else:
+                        processed_cta[cta_key] = cta_value
+                processed_main_content[key] = processed_cta
+            else:
+                processed_main_content[key] = value
+                
+        # Still keep these for backward compatibility
+        about_us_content = processed_main_content.get("About Content", "")
+        why_choose_us_content = processed_main_content.get("Why Choose Us Content", "")
 
         meta_title_template = main_content_data.get("About Page Title", main_content_data.get("Title", "About Us - {company_name} in {city_name}, {state_abbreviation}"))
         meta_title = replace_placeholders(
@@ -610,6 +650,7 @@ def about_page():
             city_name=city_name,
             city_zip_code=city_zip_code,
             required=required_data,
+            maincontent=processed_main_content,
             about_us_content=about_us_content,
             why_choose_us_content=why_choose_us_content,
             meta_title=meta_title,
@@ -646,6 +687,23 @@ def contact_page():
         state_abbreviation = state_subdomain.upper()
         zip_codes = get_zip_codes_from_db(city_name)
 
+        # Process main_content_data for HTML rendering and placeholder replacement
+        processed_main_content = {}
+        for key, value in main_content_data.items():
+            if isinstance(value, str):
+                processed_main_content[key] = Markup(replace_placeholders(value, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code))
+            elif isinstance(value, dict) and key == "CTA":
+                # Special handling for CTA dictionary
+                processed_cta = {}
+                for cta_key, cta_value in value.items():
+                    if isinstance(cta_value, str):
+                        processed_cta[cta_key] = Markup(replace_placeholders(cta_value, "", city_name, state_abbreviation, state_name, required_data, zip_codes, city_zip_code))
+                    else:
+                        processed_cta[cta_key] = cta_value
+                processed_main_content[key] = processed_cta
+            else:
+                processed_main_content[key] = value
+                
         # Use Address from required.json directly if available, otherwise use template
         # Assuming 'Address' in required.json is a pre-formatted string or a structured object
         # For this example, let's assume 'Address' in required.json is the string to use.
@@ -683,7 +741,9 @@ def contact_page():
             canonical_url=get_canonical_url(),
             favicon=required_data.get("Favicon"),
             company_name=required_data.get("Business Name"),
-            zip_codes=zip_codes
+            zip_codes=zip_codes,
+            maincontent=processed_main_content,  # Pass processed main_content for template
+            main_content=processed_main_content   # For backward compatibility
             )
     
     # If we get here, no valid city/state was found

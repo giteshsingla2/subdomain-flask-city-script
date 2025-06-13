@@ -451,7 +451,7 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <a href="#" class="logo">{{required.get("Company Name")}}</a>
+            <a href="#" class="logo">{{required.get("Business Name")}}</a>
             <nav>
                 <ul class="nav-links">
                     <li><a href="/">Home</a></li>
@@ -460,7 +460,7 @@
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </nav>
-            <a href="tel:713-555-0199" class="header-phone">
+            <a href="tel:{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}" class="header-phone">
                 <i class="fas fa-phone"></i> {{required.get("Phone")}}
             </a>
         </div>
@@ -557,7 +557,7 @@
         <div class="footer-container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>{{required.get("Company Name")}}</h3>
+                    <h3>{{required.get("Business Name")}}</h3>
                 </div>
                 <div class="footer-section">
                     <h3>Contact Information</h3>

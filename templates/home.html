@@ -268,7 +268,7 @@
                 </ul>
             </nav>
             <div class="header-contact">
-                <a href="tel:{{required.phone_number}}">{{required.phone_number}}</a>
+                <a href="tel:{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}">{{required.phone_number}}</a>
             </div>
         </div>
     </header>
@@ -277,36 +277,18 @@
         <section class="hero" id="home">
             <h1>Nationwide {{required.main_service}}</h1>
             <p>Professional {{required.main_service}} services across the United States. Fast, reliable, and affordable {{required.main_service}} solutions for your home or business.</p>
-            <a href="tel:{{required.phone_number}}" class="cta-button">Call Now for Service</a>
+            <a href="tel:{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}" class="cta-button">Call Now for Service</a>
         </section>
 
         <section class="services-section" id="services">
             <h2>Our Services</h2>
             <div class="services-grid">
+                {% for svc in services_list %}
                 <div class="service-item">
-                    <h3>AC Repair</h3>
-                    <p>Fast diagnosis and repair of all air conditioning systems. Emergency service available 24/7.</p>
+                    <h3>{{ svc.name }}</h3>
+                    <p>{{ svc.description }}</p>
                 </div>
-                <div class="service-item">
-                    <h3>AC Installation</h3>
-                    <p>Professional installation of new air conditioning units with warranty and ongoing support.</p>
-                </div>
-                <div class="service-item">
-                    <h3>HVAC Maintenance</h3>
-                    <p>Regular maintenance services to keep your system running efficiently and prevent costly repairs.</p>
-                </div>
-                <div class="service-item">
-                    <h3>Emergency Service</h3>
-                    <p>24/7 emergency AC repair services when you need us most. Fast response times guaranteed.</p>
-                </div>
-                <div class="service-item">
-                    <h3>Commercial HVAC</h3>
-                    <p>Complete commercial heating and cooling solutions for businesses of all sizes.</p>
-                </div>
-                <div class="service-item">
-                    <h3>Indoor Air Quality</h3>
-                    <p>Air purification systems, duct cleaning, and humidity control for better indoor air quality.</p>
-                </div>
+                {% endfor %}
             </div>
         </section>
 
@@ -326,7 +308,7 @@
     <footer id="contact">
         <h3>{{required.business_name}}</h3>
         <p>Nationwide {{required.main_service}} Services</p>
-        <p>Phone: <a href="tel:{{required.phone_number}}">{{required.phone_number}}</a></p>
+        <p>Phone: <a href="tel:{{required.get("Phone")|replace(' ','')|replace('(','')|replace(')','')|replace('-','')}}">{{required.phone_number}}</a></p>
         <p>Email: <a href="mailto:{{required.email}}">{{required.email}}</a></p>
         <p>Licensed & Insured | 24/7 Emergency Service</p>
         <p>&copy; 2025 {{required.business_name}}. All rights reserved.</p>
