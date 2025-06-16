@@ -852,7 +852,7 @@ def update_json(filename):
     try:
         main_domain = get_main_domain()
         data = request.get_json()
-        filepath = f"/var/www/yourapp/domains/{main_domain}/{filename}"
+        filepath = f"/var/www/subdomain-flask-city-script/domains/{main_domain}/{filename}"
         with open(filepath, 'w') as f:
             json.dump(data, f, indent=4)
         return jsonify({"status": "success", "message": f"{filename} updated successfully!"}), 200
