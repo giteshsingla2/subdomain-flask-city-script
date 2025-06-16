@@ -852,10 +852,17 @@ def update_json(filename):
     try:
         main_domain = get_main_domain()
         data = request.get_json()
+        
+        # Absolute path for file writing
         filepath = f"/var/www/subdomain-flask-city-script/domains/{main_domain}/{filename}"
         with open(filepath, 'w') as f:
             json.dump(data, f, indent=4)
-        return jsonify({"status": "success", "message": f"{filename} updated successfully!"}), 200
+        
+        # Relative path for cache invalidation (matching the path used in load_json_for_request)
+        cache_path = f"domains/{main_domain}/{filename}"
+        cache.delete_memoized(load_json, cache_path)
+        
+        return jsonify({"status": "success", "message": f"{filename} updated successfully! Cache refreshed."}), 200
     except Exception as e:
         return jsonify({"status": "failure", "message": str(e)}), 500
 
